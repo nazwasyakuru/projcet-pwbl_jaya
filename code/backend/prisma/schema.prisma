@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// ==============================
+/// USER TABLE
+/// ==============================
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  password  String
+  name      String?
+  role      Role      @default(USER)   // enum admin/user
+  orders    Order[]
+  createdAt DateTime  @default(now())
+}
+
+/// Role enum
+enum Role {
+  USER
+  ADMIN
+}
+
+/// ==============================
+/// ORDER TABLE
+/// ==============================
+model Order {
+  id             Int               @id @default(autoincrement())
+  userId         Int
+  user           User              @relation(fields: [userId], references: [id])
+
+  customerName   String
+  phone          String
+  address        String
+
+  serviceType    ServiceType
+  weight         Float
+
+  status         OrderStatus        @default(PENDING_PAYMENT)
+  trackingStatus TrackingStatus     @default(NOT_STARTED)
+
+  trackingLogs   TrackingLog[]
+  payment        Payment?
+
+  createdAt      DateTime           @default(now())
+}
+
+/// Order status enum
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID
+  PROCESSING
+  COMPLETED
+  CANCELED
+}
+
+/// Laundry service enum
+enum ServiceType {
+  REGULAR
+  EXPRESS
+  DRY_CLEAN
+}
+
+/// Tracking status enum
+enum TrackingStatus {
+  NOT_STARTED
+  PICKED_UP
+  WASHING
+  DRYING
+  IRONING
+  READY
+  DELIVERED
+}
+
+/// ==============================
+/// TRACKING LOGS (RIWAYAT)
+/// ==============================
+model TrackingLog {
+  id             Int             @id @default(autoincrement())
+  orderId        Int
+  order          Order           @relation(fields: [orderId], references: [id])
+
+  status         TrackingStatus
+  note           String?         // opsional: catatan tambahan
+  createdAt      DateTime        @default(now())
+}
+
+/// ==============================
+/// PAYMENT (OPSIONAL)
+/// ==============================
+model Payment {
+  id             Int        @id @default(autoincrement())
+  orderId        Int        @unique
+  order          Order      @relation(fields: [orderId], references: [id])
+
+  method         PaymentMethod
+  amount         Float
+  paidAt         DateTime?
+}
+
+/// Payment enum
+enum PaymentMethod {
+  CASH
+  TRANSFER
+  E_WALLET
+}
