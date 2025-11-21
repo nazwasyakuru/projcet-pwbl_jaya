@@ -16,3 +16,15 @@ export async function GET(req: Request) {
     );
   }
 }
+
+// POST → Tambah user baru
+export async function POST(req: Request) {
+  try {
+    const body = (await req.json()) as {
+      name: string;
+      email: string;
+      password: string;
+    };
+    const { name, email, password } = body;
+  }
+}
