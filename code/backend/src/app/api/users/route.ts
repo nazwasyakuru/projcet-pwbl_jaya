@@ -26,5 +26,14 @@ export async function POST(req: Request) {
       password: string;
     };
     const { name, email, password } = body;
+    
+     // Validasi kosong
+    if (!name || !email || !password) {
+      return NextResponse.json(
+        { message: "Semua field wajib diisi" },
+        { status: 400 }
+      );
+    }
+
   }
 }
