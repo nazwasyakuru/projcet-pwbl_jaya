@@ -47,3 +47,18 @@ const produk = await prisma.produk.create({
     );
   }
 }
+// =========================
+// PUT: Update Produk per ID
+// =========================
+export async function PUT(req: Request) {
+  try {
+    const url = new URL(req.url);
+    const id = Number(url.searchParams.get("id"));
+
+    if (!id) {
+      return NextResponse.json(
+        { message: "ID produk tidak ditemukan" },
+        { status: 400 }
+      );
+    }
+  }
