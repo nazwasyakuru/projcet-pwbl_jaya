@@ -33,3 +33,22 @@ export async function POST(req: Request) {
       weight: number;
       totalPrice?: number;
     };
+   const { name, phone, address, serviceType, weight, totalPrice } = data;
+
+    if (!name || !phone || !serviceType || !weight) {
+      return NextResponse.json(
+        { message: "Data wajib belum lengkap" },
+        { status: 400 }
+      );
+    }
+
+    const newOrder = await prisma.order.create({
+      data: {
+        name,
+        phone,
+        address,
+        serviceType,
+        weight,
+        totalPrice: totalPrice ?? 0, // default
+      },
+    });
