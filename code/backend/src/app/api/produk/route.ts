@@ -17,3 +17,17 @@ export async function GET() {
     );
   }
 }
+// POST: Tambah Produk Baru
+// =========================
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+
+    const { nama, harga, stok, deskripsi } = body;
+
+    if (!nama || !harga || !stok) {
+      return NextResponse.json(
+        { message: "nama, harga, dan stok wajib diisi" },
+        { status: 400 }
+      );
+    }
