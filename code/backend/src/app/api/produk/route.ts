@@ -80,3 +80,22 @@ const body = await req.json();
     );
   }
 }
+
+/ =========================
+// DELETE: Hapus Produk per ID
+// =========================
+export async function DELETE(req: Request) {
+  try {
+    const url = new URL(req.url);
+    const id = Number(url.searchParams.get("id"));
+
+    if (!id) {
+      return NextResponse.json(
+        { message: "ID produk tidak ditemukan" },
+        { status: 400 }
+      );
+    }
+
+    await prisma.produk.delete({
+      where: { id },
+    });
