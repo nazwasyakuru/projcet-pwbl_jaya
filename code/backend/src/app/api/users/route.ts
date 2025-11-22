@@ -63,7 +63,16 @@ export async function POST(req: Request) {
         { status: 409 }
       );
     }
+   // 5. Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  }
-  
-}
+    // 6. Simpan ke database
+    const newUser = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword
+      }
+    });
+
+    
