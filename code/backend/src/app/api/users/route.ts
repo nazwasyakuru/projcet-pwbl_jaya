@@ -51,6 +51,19 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+    
+       // 4. Cek username (name) sudah ada atau belum
+    const nameExist = await prisma.user.findFirst({
+      where: { name }
+    });
+
+    if (nameExist) {
+      return NextResponse.json(
+        { message: "Username sudah digunakan" },
+        { status: 409 }
+      );
+    }
 
   }
+  
 }
