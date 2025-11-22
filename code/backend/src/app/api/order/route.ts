@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     if (!name || !phone || !serviceType || !weight) {
       return NextResponse.json(
         { message: "Data wajib belum lengkap" },
-        { status: 400 }
+        { status: 400 }men
       );
     }
 
@@ -52,3 +52,15 @@ export async function POST(req: Request) {
         totalPrice: totalPrice ?? 0, // default
       },
     });
+       return NextResponse.json(
+      { message: "Order dibuat", order: newOrder },
+      { status: 201 }
+    );
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      { error: "Terjadi kesalahan" },
+      { status: 500 }
+    );
+  }
+}
