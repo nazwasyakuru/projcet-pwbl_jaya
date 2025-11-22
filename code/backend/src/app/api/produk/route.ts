@@ -61,4 +61,22 @@ export async function PUT(req: Request) {
         { status: 400 }
       );
     }
+  
+const body = await req.json();
+
+    const produk = await prisma.produk.update({
+      where: { id },
+      data: body,
+    });
+
+    return NextResponse.json(
+      { message: "Produk berhasil diperbarui", produk },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Gagal memperbarui produk" },
+      { status: 500 }
+    );
   }
+}
