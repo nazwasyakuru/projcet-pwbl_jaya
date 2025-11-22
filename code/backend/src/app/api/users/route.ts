@@ -26,11 +26,28 @@ export async function POST(req: Request) {
       password: string;
     };
     const { name, email, password } = body;
-    
+
      // Validasi kosong
     if (!name || !email || !password) {
       return NextResponse.json(
-        { message: "Semua field wajib diisi" },
+        { message: "Semua field wajib di isi" },
+        { status: 400 }
+      );
+    }
+    // Cek email sudah terdaftar
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+    });
+    if (existingUser) {
+      return NextResponse.json(
+        { message: "Email sudah terdaftar" },
+        { status: 400 }
+      );
+    }
+      // 2. Validasi panjang password
+    if (password.length < 8) {
+      return NextResponse.json(
+        { message: "Password harus minimal 8 karakter" },
         { status: 400 }
       );
     }
