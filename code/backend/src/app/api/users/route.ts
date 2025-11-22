@@ -74,5 +74,21 @@ export async function POST(req: Request) {
         password: hashedPassword
       }
     });
+ return NextResponse.json(
+      {
+        message: "User berhasil ditambahkan",
+        user: newUser
+      },
+      { status: 201 }
+    );
 
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      { message: "Gagal menambahkan user baru" },
+      { status: 500 }
+    );
+  }
+}
     
