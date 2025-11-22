@@ -31,3 +31,19 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
+const produk = await prisma.produk.create({
+      data: { nama, harga, stok, deskripsi },
+    });
+
+    return NextResponse.json(
+      { message: "Produk berhasil ditambahkan", produk },
+      { status: 201 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Gagal menambahkan produk" },
+      { status: 500 }
+    );
+  }
+}
