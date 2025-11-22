@@ -15,3 +15,21 @@ function verifyToken(req: Request) {
     return null;
   }
 }
+
+// ===== CREATE ORDER =====
+export async function POST(req: Request) {
+  try {
+    const user = verifyToken(req);
+    if (!user) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    // TYPE agar tidak error
+    const data = (await req.json()) as {
+      name: string;
+      phone: string;
+      address: string;
+      serviceType: string;
+      weight: number;
+      totalPrice?: number;
+    };
