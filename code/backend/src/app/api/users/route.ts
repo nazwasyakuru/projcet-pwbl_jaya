@@ -91,4 +91,44 @@ export async function POST(req: Request) {
     );
   }
 }
+
+// PUT → Update user
+export async function PUT(req: Request) {
+  try {
+    const body = (await req.json()) as {
+      id: number;
+      name?: string;
+      password?: string;
+    };
+
+    const { id, name, password } = body;
+    const updateData: any = {};
+
+    if (name) updateData.name = name;
+
+    // Email diabaikan, tidak dimasukkan ke updateData
+
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateData.password = hashedPassword;
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: updateData
+    });
+
+    return NextResponse.json({
+      message: "User berhasil diupdate",
+      user: updatedUser
+    }, { status: 200 });
+
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Gagal mengupdate user" },
+      { status: 500 }
+    );
+  }
+}
+
     
