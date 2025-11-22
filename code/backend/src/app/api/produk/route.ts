@@ -99,3 +99,14 @@ export async function DELETE(req: Request) {
     await prisma.produk.delete({
       where: { id },
     });
+    return NextResponse.json(
+      { message: "Produk berhasil dihapus" },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Gagal menghapus produk" },
+      { status: 500 }
+    );
+  }
+}
