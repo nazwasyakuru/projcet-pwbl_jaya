@@ -34,7 +34,23 @@ export async function POST(req: Request) {
                 { status: 400 }
             );
         }
-        
+        //cek order ada atau tidak
+        const order = await prisma.order.findUnique({
+            where: { id: orderId },
+        });
+        if (!order) {
+            return NextResponse.json({ message: "Order tidak ditemukan" }, { status: 404 });
+        }
+        const tracking = await prisma.tracking.create({
+            data: {
+                orderId,
+                status,
+            },
+        });
+        return NextResponse.json(
+            { message: "Tracking ditambahkan", tracking },
+            { status: 201 }
+        );
     }
     catch (err) {
         console.log(err);
