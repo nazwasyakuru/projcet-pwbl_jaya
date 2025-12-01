@@ -38,7 +38,7 @@ export async function POST(req: Request) {
     if (!name || !phone || !serviceType || !weight) {
       return NextResponse.json(
         { message: "Data wajib belum lengkap" },
-        { status: 400 }men
+        { status: 400 }
       );
     }
 
