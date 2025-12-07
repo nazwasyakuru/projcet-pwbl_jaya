@@ -26,5 +26,14 @@ export default function DashboardPage() {
                         <h2 className="text-2xl font-semibold">Dashboard</h2>
                         <p className="text-sm text-gray-500">Ringkasan operasional laundry</p>
                     </div>
+                    <div className="grid grid-cols-4 gap-4 mb-6">
+                        {summary.map((s) => (
+                            <div key={s.title} className="bg-white p-4 rounded shadow">
+                                <div className="text-sm text-gray-500">{s.title}</div>
+                                <div className="text-2xl font-bold mt-2">{s.value}</div>
+                            </div>
+                        ))}
+                    </div>
+
 
 
