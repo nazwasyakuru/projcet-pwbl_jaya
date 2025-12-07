@@ -58,6 +58,19 @@ export default function DashboardPage() {
                                         <td>{o.paket}</td>
                                         <td>Rp{o.total.toLocaleString("id-ID")}</td>
                                         <td><span className="text-xs px-2 py-1 rounded bg-yellow-100 text-yellow-800">{o.status}</span></td>
+                                        <td><Link href={`/orders/${o.id}`} className="text-teal-600">Detail</Link></td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </section>
+            </main>
+        </div>
+    );
+}
+
 
 
 
