@@ -15,5 +15,6 @@ export default function Navbar() {
                 <nav className="flex items-center gap-4 text-sm">
                     <Link href="/dashboard" className="text-gray-600 hover:text-teal-600">Dashboard</Link>
                     <Link href="/orders" className="text-gray-600 hover:text-teal-600">Pesanan</Link>
+                    <Link href="/transactions" className="text-gray-600 hover:text-teal-600">Transaksi</Link>
 
 
