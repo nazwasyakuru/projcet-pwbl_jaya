@@ -39,6 +39,18 @@ export default function DashboardPage() {
                             <h3 className="font-semibold">Daftar Pesanan Aktif</h3>
                             <Link href="/orders/new" className="text-sm text-teal-600">Buat Order Baru</Link>
                         </div>
+                        <table className="w-full text-sm">
+                            <thead className="text-gray-500">
+                                <tr>
+                                    <th className="text-left py-2">#</th>
+                                    <th className="text-left py-2">Nama</th>
+                                    <th className="text-left py-2">Paket</th>
+                                    <th className="text-left py-2">Total</th>
+                                    <th className="text-left py-2">Status</th>
+                                    <th className="text-left py-2">Aksi</th>
+                                </tr>
+                            </thead>
+
 
 
 
