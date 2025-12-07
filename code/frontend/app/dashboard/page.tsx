@@ -34,6 +34,12 @@ export default function DashboardPage() {
                             </div>
                         ))}
                     </div>
+                    <div className="bg-white p-4 rounded shadow">
+                        <div className="flex items-center justify-between mb-3">
+                            <h3 className="font-semibold">Daftar Pesanan Aktif</h3>
+                            <Link href="/orders/new" className="text-sm text-teal-600">Buat Order Baru</Link>
+                        </div>
+
 
 
 
