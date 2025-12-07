@@ -8,3 +8,9 @@ export default function Sidebar() {
                 <li><Link href="/dashboard" className="block p-2 rounded hover:bg-gray-100">Dashboard</Link></li>
                 <li><Link href="/orders" className="block p-2 rounded hover:bg-gray-100">Order Baru / Daftar Order</Link></li>
                 <li><Link href="/transactions" className="block p-2 rounded hover:bg-gray-100">Riwayat Transaksi</Link></li>
+                <li><Link href="/employees" className="block p-2 rounded hover:bg-gray-100">Manage Karyawan</Link></li>
+                <li><Link href="/packages" className="block p-2 rounded hover:bg-gray-100">Manage Paket</Link></li>
+            </ul>
+        </aside>
+    );
+}
