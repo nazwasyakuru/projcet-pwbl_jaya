@@ -50,6 +50,15 @@ export default function DashboardPage() {
                                     <th className="text-left py-2">Aksi</th>
                                 </tr>
                             </thead>
+                            <tbody>
+                                {recent.map((o) => (
+                                    <tr key={o.id} className="border-t">
+                                        <td className="py-2">{o.id}</td>
+                                        <td>{o.name}</td>
+                                        <td>{o.paket}</td>
+                                        <td>Rp{o.total.toLocaleString("id-ID")}</td>
+                                        <td><span className="text-xs px-2 py-1 rounded bg-yellow-100 text-yellow-800">{o.status}</span></td>
+
 
 
 
