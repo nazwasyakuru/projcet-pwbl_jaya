@@ -96,12 +96,12 @@ export async function POST(req: Request) {
 export async function PUT(req: Request) {
   try {
     const body = (await req.json()) as {
-      id: number;
-      name?: string;
+      name: string;
+      email: string;
       password?: string;
     };
 
-    const { id, name, password } = body;
+    const { name, email, password } = body;
     const updateData: any = {};
 
     if (name) updateData.name = name;
@@ -114,7 +114,7 @@ export async function PUT(req: Request) {
     }
 
     const updatedUser = await prisma.user.update({
-      where: { id },
+      where: { email },
       data: updateData
     });
 
@@ -130,7 +130,6 @@ export async function PUT(req: Request) {
     );
   }
 }
-
 // ===== VERIFIKASI TOKEN =====
 function verifyToken(req: Request) {
   const auth = req.headers.get("authorization");
