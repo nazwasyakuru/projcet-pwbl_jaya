@@ -16,3 +16,28 @@ function verifyAdmin(req: Request) {
     return null;
   }
 }
+
+// GET TRACKING BY ID
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const trackId = Number(params.id);
+
+    const tracking = await prisma.tracking.findUnique({
+      where: { id: trackId },
+      include: {
+        order: true,
+      },
+    });
+
+    if (!tracking) {
+      return NextResponse.json({ message: "Tracking tidak ditemukan" }, { status: 404 });
+    }
+
+    return NextResponse.json({ tracking });
+  } catch (error) {
+    return NextResponse.json({ error: "Gagal mengambil tracking" }, { status: 500 });
+  }
+}
