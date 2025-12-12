@@ -41,3 +41,39 @@ export async function GET(
     return NextResponse.json({ error: "Gagal mengambil tracking" }, { status: 500 });
   }
 }
+
+
+// UPDATE TRACKING BY ID
+export async function PUT(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const admin = verifyAdmin(req);
+    if (!admin) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const trackId = Number(params.id);
+
+    const data = (await req.json()) as {
+      status?: string;
+    };
+
+    if (!data.status) {
+      return NextResponse.json({ message: "Status wajib diisi" }, { status: 400 });
+    }
+
+    const updated = await prisma.tracking.update({
+      where: { id: trackId },
+      data: {
+        status: data.status,
+        timestamp: new Date(),
+      },
+    });
+
+    return NextResponse.json({ message: "Tracking diupdate", tracking: updated });
+  } catch (error) {
+    return NextResponse.json({ error: "Gagal update tracking" }, { status: 500 });
+  }
+}
