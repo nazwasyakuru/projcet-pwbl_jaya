@@ -50,6 +50,7 @@ export async function POST(req: Request) {
         serviceType,
         weight,
         totalPrice: totalPrice ?? 0, // default
+        isPaid: false,
       },
     });
        return NextResponse.json(
@@ -60,6 +61,24 @@ export async function POST(req: Request) {
     console.log(err);
     return NextResponse.json(
       { error: "Terjadi kesalahan" },
+      { status: 500 }
+    );
+  }
+}
+
+// ===== GET ALL ORDERS =====
+export async function GET(req: Request) {
+  try {
+    const orders = await prisma.order.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return NextResponse.json({ orders }, { status: 200 });
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      { error: "Gagal mengambil orders" },
       { status: 500 }
     );
   }
