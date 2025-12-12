@@ -59,3 +59,18 @@ export async function POST(req: Request) {
 }
 
 
+// get tracking > ambil semua tracking terbaru berdasarkan orderId
+export async function GET(req: Request) {
+    try {
+        const tracks = await prisma.tracking.findMany({
+            orderBy: {timestamp: "desc"},
+             include: {
+                order: true,
+            },
+        });
+        return NextResponse.json({tracks}, {status: 200});
+    } catch (err) {
+        console.log(err);
+        return NextResponse.json({ error: "Gagal mengambil data" }, { status: 500 });
+    }
+}
