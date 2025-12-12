@@ -1,23 +1,9 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+
 const prisma = new PrismaClient();
 
-// GET → Ambil semua user
-export async function GET(req: Request) {
-  try {
-    const users = await prisma.user.findMany();
-    return NextResponse.json(users);
-  } catch (error) {
-    return NextResponse.json(
-      { message: "Gagal mengambil data user" },
-      { status: 500 }
-    );
-  }
-}
-
-// POST → Tambah user baru
 export async function POST(req: Request) {
   try {
     const body = (await req.json()) as {
@@ -92,52 +78,3 @@ export async function POST(req: Request) {
   }
 }
 
-// PUT → Update user
-export async function PUT(req: Request) {
-  try {
-    const body = (await req.json()) as {
-      name: string;
-      email: string;
-      password?: string;
-    };
-
-    const { name, email, password } = body;
-    const updateData: any = {};
-
-    if (name) updateData.name = name;
-
-    // Email diabaikan, tidak dimasukkan ke updateData
-
-    if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      updateData.password = hashedPassword;
-    }
-
-    const updatedUser = await prisma.user.update({
-      where: { email },
-      data: updateData
-    });
-
-    return NextResponse.json({
-      message: "User berhasil diupdate",
-      user: updatedUser
-    }, { status: 200 });
-
-  } catch (error) {
-    return NextResponse.json(
-      { message: "Gagal mengupdate user" },
-      { status: 500 }
-    );
-  }
-}
-// ===== VERIFIKASI TOKEN =====
-function verifyToken(req: Request) {
-  const auth = req.headers.get("authorization");
-  if (!auth) return null;
-  const token = auth.split(" ")[1];
-  try {
-    return jwt.verify(token, process.env.JWT_SECRET!);
-  } catch {
-    return null;
-  }
-}

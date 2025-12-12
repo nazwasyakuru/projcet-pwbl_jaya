@@ -27,6 +27,9 @@ model Order {
   totalPrice  Int
   isPaid      Boolean    @default(false)
   createdAt   DateTime   @default(now())
+   
+   userId    Int?
+   user      User?    @relation(fields: [userId], references: [id])
 
   tracking    Tracking[]
 }
@@ -45,5 +48,7 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
+
+  orders Order[]
 }
 

@@ -41,6 +41,22 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+     
+    // cegah order duplikat: cek apakah ada order dengan nama, phone, dan address yang sama dalam 1 jam terakhir
+    const existingOrder = await prisma.order.findFirst({
+  where: {
+    phone,
+    serviceType,
+    isPaid: false,      // aturan: belum dibayar tidak boleh buat duplikat
+  },
+});
+
+if (existingOrder) {
+  return NextResponse.json(
+    { message: "Order dengan layanan dan nomor ini sudah ada" },
+    { status: 409 }
+  );
+}
 
     const newOrder = await prisma.order.create({
       data: {
