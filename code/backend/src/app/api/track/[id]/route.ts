@@ -77,3 +77,26 @@ export async function PUT(
     return NextResponse.json({ error: "Gagal update tracking" }, { status: 500 });
   }
 }
+
+// DELETE TRACKING BY ID
+export async function DELETE(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const admin = verifyAdmin(req);
+    if (!admin) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const trackId = Number(params.id);
+
+    await prisma.tracking.delete({
+      where: { id: trackId },
+    });
+
+    return NextResponse.json({ message: "Tracking dihapus" });
+  } catch (error) {
+    return NextResponse.json({ error: "Gagal menghapus tracking" }, { status: 500 });
+  }
+}
