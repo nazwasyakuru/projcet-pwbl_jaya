@@ -139,3 +139,62 @@ export async function PUT(
   }
 }
 
+// ===== DELETE ORDER =====
+export async function DELETE(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const user = verifyToken(req);
+    if (!user) {
+      return NextResponse.json(
+        { message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const id = Number(params.id);
+
+    const order = await prisma.order.findUnique({ where: { id } });
+
+    if (!order) {
+      return NextResponse.json(
+        { message: "Order tidak ditemukan" },
+        { status: 404 }
+      );
+    }
+
+    //  CEGAH DELETE JIKA SUDAH BAYAR
+    if (order.isPaid === true) {
+      return NextResponse.json(
+        {
+          message:
+            "Order sudah dibayar, tidak bisa dihapus. Silakan hubungi CS.",
+        },
+        { status: 403 }
+      );
+    }
+
+    //  USER HANYA BISA HAPUS ORDER MILIKNYA SENDIRI (kecuali admin)
+    if (user.role !== "admin" && user.id !== order.userId) {
+      return NextResponse.json(
+        { message: "Kamu tidak punya akses ke order ini" },
+        { status: 403 }
+      );
+    }
+
+    // ✔ DELETE DIPERBOLEHKAN
+    await prisma.order.delete({ where: { id } });
+
+    return NextResponse.json(
+      { message: "Order dihapus" },
+      { status: 200 }
+    );
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      { error: "Terjadi kesalahan" },
+      { status: 500 }
+    );
+  }
+}
