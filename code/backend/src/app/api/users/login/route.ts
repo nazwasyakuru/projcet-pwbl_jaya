@@ -5,9 +5,22 @@ import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
+//CORS
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "http://localhost:3001",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
+
+// PRE-FLIGHT (WAJIB UNTUK BROWSER)
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
+
+//LOGIN USER
 export async function POST(req: Request) {
   try {
-    const body = await req.json() as {
+    const body = (await req.json()) as {
       email: string;
       password: string;
     };
@@ -17,19 +30,19 @@ export async function POST(req: Request) {
     if (!email || !password) {
       return NextResponse.json(
         { message: "Email dan password wajib diisi" },
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       );
     }
 
     // CARI USER BERDASARKAN EMAIL
     const user = await prisma.user.findUnique({
-      where: { email }
+      where: { email },
     });
 
     if (!user) {
       return NextResponse.json(
         { message: "Email tidak ditemukan" },
-        { status: 404 }
+        { status: 404, headers: corsHeaders }
       );
     }
 
@@ -38,7 +51,7 @@ export async function POST(req: Request) {
     if (!isValid) {
       return NextResponse.json(
         { message: "Password salah" },
-        { status: 401 }
+        { status: 401, headers: corsHeaders }
       );
     }
 
@@ -48,22 +61,24 @@ export async function POST(req: Request) {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: "user", // default role user
+        role: "user",
       },
       process.env.JWT_SECRET!,
       { expiresIn: "1d" }
     );
 
-    return NextResponse.json({
-      message: "Login berhasil",
-      token,
-    });
-
+    return NextResponse.json(
+      {
+        message: "Login berhasil",
+        token,
+      },
+      { headers: corsHeaders }
+    );
   } catch (err) {
     console.log(err);
     return NextResponse.json(
       { error: "Terjadi kesalahan server" },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 }
