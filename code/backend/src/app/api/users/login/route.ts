@@ -5,19 +5,19 @@ import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-//CORS
+// Cors headers
 const corsHeaders = {
   "Access-Control-Allow-Origin": "http://localhost:3001",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
-// PRE-FLIGHT (WAJIB UNTUK BROWSER)
+// Preflight request handler
 export async function OPTIONS() {
   return NextResponse.json({}, { headers: corsHeaders });
 }
 
-//LOGIN USER
+//login user
 export async function POST(req: Request) {
   try {
     const body = (await req.json()) as {
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // CARI USER BERDASARKAN EMAIL
+    // Cari user berdasarkan email
     const user = await prisma.user.findUnique({
       where: { email },
     });
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // CEK PASSWORD
+    // Cek password
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {
       return NextResponse.json(
@@ -55,7 +55,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // BUAT JWT TOKEN USER
+    // buat token JWT
     const token = jwt.sign(
       {
         id: user.id,
