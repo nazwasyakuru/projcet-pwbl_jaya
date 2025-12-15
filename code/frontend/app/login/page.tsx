@@ -15,14 +15,14 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("LOGIN SUBMIT"); 
+    console.log("LOGIN SUBMIT");
 
     setError("");
     setLoading(true);
 
     try {
       const res = await fetch(`${API_URL}/users/login`, {
-        method: "POST", 
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -42,7 +42,10 @@ export default function LoginPage() {
       }
 
       // SIMPAN TOKEN
-      localStorage.setItem("token", data.token);
+      if (typeof window !== "undefined") {
+        localStorage.setItem("token", data.token);
+      }
+
 
       // REDIRECT
       router.push("/dashboard");
@@ -73,7 +76,7 @@ export default function LoginPage() {
               Email
             </label>
             <input
-              type="text"
+              type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full border px-3 py-2 rounded-md"
