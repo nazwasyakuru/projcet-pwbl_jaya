@@ -32,6 +32,7 @@ export async function POST(req: Request) {
       serviceType: string;
       weight: number;
       totalPrice?: number;
+      status?: string;
     };
    const { name, phone, address, serviceType, weight, totalPrice } = data;
 

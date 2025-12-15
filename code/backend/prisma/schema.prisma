@@ -18,18 +18,19 @@ model Admin {
 }
 
 model Order {
-  id          Int       @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   phone       String
   address     String
-  serviceType String     // reguler, express, dsb.
-  weight      Float      // kg
+  serviceType String
+  weight      Float?          
   totalPrice  Int
-  isPaid      Boolean    @default(false)
-  createdAt   DateTime   @default(now())
-   
-   userId    Int?
-   user      User?    @relation(fields: [userId], references: [id])
+  isPaid      Boolean  @default(false)
+  status      String   @default("CREATED") 
+  createdAt   DateTime @default(now())
+
+  userId      Int?
+  user        User?    @relation(fields: [userId], references: [id])
 
   tracking    Tracking[]
 }
