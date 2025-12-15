@@ -24,4 +24,21 @@ export async function PATCH(
 
   const { weight } = body;
 
+// VALIDASI BERAT
+  if (!weight || weight <= 0) {
+    return NextResponse.json(
+      { message: "Berat tidak valid" },
+      { status: 400 }
+    );
+  }
+// AMBIL DATA ORDER
+  const order = await prisma.order.findUnique({ where: { id } });
+  if (!order) {
+    return NextResponse.json(
+      { message: "Order tidak ditemukan" },
+      { status: 404 }
+    );
+  }
+
+  
 }
