@@ -73,7 +73,7 @@ export default function LoginPage() {
               Email
             </label>
             <input
-              type="text"
+              type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full border px-3 py-2 rounded-md"
