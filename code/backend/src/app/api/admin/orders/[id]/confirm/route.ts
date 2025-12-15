@@ -1,0 +1,27 @@
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+import { verifyAdmin } from "@/lib/auth";
+import { calculatePrice, ServiceType } from "@/lib/pricing";
+
+const prisma = new PrismaClient();
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const admin = verifyAdmin(req);
+  if (!admin) {
+    return NextResponse.json(
+      { message: "Unauthorized admin" },
+      { status: 401 }
+    );
+  }
+
+  const id = Number(params.id);
+  const body = await req.json() as {
+  weight: number;
+  };
+
+  const { weight } = body;
+
+}

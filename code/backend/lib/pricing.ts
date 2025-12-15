@@ -15,3 +15,4 @@ export function calculatePrice(
 
   return PRICE_PER_KG[serviceType] * weightKg;
 }
+

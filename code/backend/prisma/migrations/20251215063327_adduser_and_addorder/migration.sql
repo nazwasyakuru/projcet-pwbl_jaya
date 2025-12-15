@@ -15,9 +15,10 @@ CREATE TABLE "Order" (
     "phone" TEXT NOT NULL,
     "address" TEXT NOT NULL,
     "serviceType" TEXT NOT NULL,
-    "weight" DOUBLE PRECISION NOT NULL,
+    "weight" DOUBLE PRECISION,
     "totalPrice" INTEGER NOT NULL,
     "isPaid" BOOLEAN NOT NULL DEFAULT false,
+    "status" TEXT NOT NULL DEFAULT 'CREATED',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" INTEGER,
 
