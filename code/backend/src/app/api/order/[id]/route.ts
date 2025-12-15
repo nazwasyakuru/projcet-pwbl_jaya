@@ -83,6 +83,14 @@ export async function PUT(
       { status: 404 }
     );
   }
+  // CEGAH UPDATE JIKA SUDAH KONFIRMASI
+  if (order.status !== "CREATED") {
+  return NextResponse.json(
+    { message: "Order sudah dikonfirmasi, tidak bisa diubah" },
+    { status: 403 }
+  );
+}
+
 
   // === RULE USER ===
   if (user.role === "user") {
