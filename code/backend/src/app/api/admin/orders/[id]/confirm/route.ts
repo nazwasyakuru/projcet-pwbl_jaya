@@ -46,5 +46,35 @@ export async function PATCH(
       { status: 400 }
     );
   }
+// HITUNG TOTAL HARGA
+  const totalPrice = calculatePrice(
+  order.serviceType as ServiceType,
+  weight
+  );
+// UPDATE ORDER DAN TAMBAH TRACKING DENGAN TRANSAKSI
+  const updatedOrder = await prisma.$transaction(async (tx) => {
+    const updated = await tx.order.update({
+      where: { id },
+      data: {
+        weight,
+        totalPrice,
+        status: "CONFIRMED",
+      },
+    });
 
+    await tx.tracking.create({
+      data: {
+        orderId: id,
+        status: "CONFIRMED",
+      },
+    });
+
+    return updated;
+  });
+
+  // RESPONSE
+  return NextResponse.json(
+    { message: "Order berhasil dikonfirmasi", order: updatedOrder },
+    { status: 200 }
+  );
 }
