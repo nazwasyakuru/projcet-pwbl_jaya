@@ -40,5 +40,11 @@ export async function PATCH(
     );
   }
 
-  
+  if (order.status !== "CREATED") {
+    return NextResponse.json(
+      { message: "Order sudah dikonfirmasi" },
+      { status: 400 }
+    );
+  }
+
 }
