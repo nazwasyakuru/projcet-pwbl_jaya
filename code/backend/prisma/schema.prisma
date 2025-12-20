@@ -53,3 +53,14 @@ model User {
   orders Order[]
 }
 
+enum ServiceType {
+  REGULER
+  EXPRESS
+}
+
+model Package {
+  id          String      @id @default(cuid())
+  label       String
+  serviceType ServiceType
+  createdAt   DateTime    @default(now())
+}
