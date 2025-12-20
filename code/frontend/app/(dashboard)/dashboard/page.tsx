@@ -17,7 +17,7 @@ interface Order {
 
 export default function DashboardPage() {
   // ======================
-  // DATA DUMMY (SESUAI PDF)
+  // DATA DUMMY ORDER
   // ======================
   const orders: Order[] = [
     {
