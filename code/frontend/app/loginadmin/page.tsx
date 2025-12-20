@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const API_URL = "http://localhost:3000/api";
+const API_URL = "http://localhost:3000/api/admin/login";
 
 export default function LoginPage() {
   const router = useRouter();
