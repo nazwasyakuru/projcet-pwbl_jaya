@@ -66,9 +66,10 @@ export default function HomePage() {
               <Link href={protectedRoute("/tracking")} onClick={() => setOpen(false)}>
                 Tracking
               </Link>
-              <Link href="/login" onClick={() => setOpen(false)}>
+              <Link href="/loginuser" onClick={() => setOpen(false)}>
                 Sign In
               </Link>
+
             </nav>
           </div>
         )}
