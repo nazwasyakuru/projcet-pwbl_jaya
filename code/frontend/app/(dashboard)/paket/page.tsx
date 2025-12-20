@@ -8,16 +8,18 @@ interface Paket {
   harga: number;
 }
 
+interface FormPaket {
+  nama: string;
+  harga: string; // ⬅️ PENTING: string, bukan number
+}
+
 export default function Page() {
   const [data, setData] = useState<Paket[]>([
     { id: 1, nama: "Cuci Kering", harga: 5000 },
     { id: 2, nama: "Cuci Setrika", harga: 7000 },
   ]);
 
-  const [form, setForm] = useState<{
-    nama: string;
-    harga: number | "";
-  }>({
+  const [form, setForm] = useState<FormPaket>({
     nama: "",
     harga: "",
   });
@@ -27,31 +29,41 @@ export default function Page() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    if (form.harga === "") {
-      alert("Harga wajib diisi");
+    const hargaNumber = Number(form.harga);
+
+    if (isNaN(hargaNumber) || hargaNumber <= 0) {
+      alert("Harga tidak valid");
       return;
     }
 
-    const payload: Paket = {
-      id: editId ?? Date.now(),
-      nama: form.nama,
-      harga: Number(form.harga),
-    };
-
     if (editId) {
-      setData(data.map((item) => (item.id === editId ? payload : item)));
+      setData(
+        data.map((item) =>
+          item.id === editId
+            ? { id: editId, nama: form.nama, harga: hargaNumber }
+            : item
+        )
+      );
       setEditId(null);
     } else {
-      setData([...data, payload]);
+      setData([
+        ...data,
+        {
+          id: Date.now(),
+          nama: form.nama,
+          harga: hargaNumber,
+        },
+      ]);
     }
 
+    // reset form
     setForm({ nama: "", harga: "" });
   };
 
   const handleEdit = (item: Paket) => {
     setForm({
       nama: item.nama,
-      harga: item.harga,
+      harga: item.harga.toString(),
     });
     setEditId(item.id);
   };
@@ -61,6 +73,9 @@ export default function Page() {
       setData(data.filter((item) => item.id !== id));
     }
   };
+
+  const formatRupiah = (value: number) =>
+    "Rp " + value.toLocaleString("id-ID");
 
   return (
     <>
@@ -78,17 +93,15 @@ export default function Page() {
           />
 
           <input
-            type="number"
-            inputMode="numeric"
+            type="text"
             placeholder="Harga"
             value={form.harga}
-            onChange={(e) => {
-              const raw = e.target.value.replace(/\./g, "");
+            onChange={(e) =>
               setForm({
                 ...form,
-                harga: raw === "" ? "" : Number(raw),
-              });
-            }}
+                harga: e.target.value.replace(/\D/g, ""),
+              })
+            }
             required
           />
 
@@ -110,7 +123,7 @@ export default function Page() {
               {data.map((item) => (
                 <tr key={item.id}>
                   <td>{item.nama}</td>
-                  <td>Rp {item.harga.toLocaleString("id-ID")}</td>
+                  <td>{formatRupiah(item.harga)}</td>
                   <td>
                     <button
                       className="btn-edit"
@@ -127,6 +140,13 @@ export default function Page() {
                   </td>
                 </tr>
               ))}
+              {data.length === 0 && (
+                <tr>
+                  <td colSpan={3} align="center">
+                    Data paket kosong
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -187,17 +207,12 @@ export default function Page() {
           font-size: 14px;
         }
 
-        tbody tr:hover {
-          background: #f0fdfa;
-        }
-
         .btn-primary {
           background: #0d9488;
           color: white;
           border: none;
           padding: 10px;
           border-radius: 6px;
-          cursor: pointer;
         }
 
         .btn-edit {
