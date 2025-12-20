@@ -63,4 +63,39 @@ export default function RegisterPage() {
                         onChange={(e) => setNama(e.target.value)}
                         required
                     />
-                    
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        className="w-full border px-3 py-2 rounded-md"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        className="w-full border px-3 py-2 rounded-md"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+
+                    <button
+                        disabled={loading}
+                        className="w-full bg-teal-600 text-white py-2 rounded-md hover:bg-teal-700 disabled:opacity-50"
+                    >
+                        {loading ? "Loading..." : "Daftar"}
+                    </button>
+                </form>
+
+                <p className="mt-6 text-center text-sm">
+                    Sudah punya akun?{" "}
+                    <Link href="/loginuser" className="text-teal-600 font-medium">
+                        Login
+                    </Link>
+                </p>
+            </div>
+        </div>
+    );
+}
