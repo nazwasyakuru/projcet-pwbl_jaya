@@ -3,115 +3,156 @@
 import { useState, FormEvent } from "react";
 
 interface Paket {
-    id: number;
-    nama: string;
-    harga: number;
+  id: number;
+  nama: string;
+  harga: number;
 }
 
+interface FormPaket {
+  nama: string;
+  harga: string; // ⬅️ PENTING: string, bukan number
+}
 
 export default function Page() {
-    const [data, setData] = useState<Paket[]>([
-        { id: 1, nama: "Cuci Kering", harga: 5000 },
-        { id: 2, nama: "Cuci Setrika", harga: 7000 },
-    ]);
+  const [data, setData] = useState<Paket[]>([
+    { id: 1, nama: "Cuci Kering", harga: 5000 },
+    { id: 2, nama: "Cuci Setrika", harga: 7000 },
+  ]);
 
-    const [form, setForm] = useState<Omit<Paket, "id">>({
-        nama: "",
-        harga: 0,
+  const [form, setForm] = useState<FormPaket>({
+    nama: "",
+    harga: "",
+  });
+
+  const [editId, setEditId] = useState<number | null>(null);
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    const hargaNumber = Number(form.harga);
+
+    if (isNaN(hargaNumber) || hargaNumber <= 0) {
+      alert("Harga tidak valid");
+      return;
+    }
+
+    if (editId) {
+      setData(
+        data.map((item) =>
+          item.id === editId
+            ? { id: editId, nama: form.nama, harga: hargaNumber }
+            : item
+        )
+      );
+      setEditId(null);
+    } else {
+      setData([
+        ...data,
+        {
+          id: Date.now(),
+          nama: form.nama,
+          harga: hargaNumber,
+        },
+      ]);
+    }
+
+    // reset form
+    setForm({ nama: "", harga: "" });
+  };
+
+  const handleEdit = (item: Paket) => {
+    setForm({
+      nama: item.nama,
+      harga: item.harga.toString(),
     });
+    setEditId(item.id);
+  };
 
+  const handleDelete = (id: number) => {
+    if (confirm("Yakin hapus paket?")) {
+      setData(data.filter((item) => item.id !== id));
+    }
+  };
 
-    const [editId, setEditId] = useState<number | null>(null);
+  const formatRupiah = (value: number) =>
+    "Rp " + value.toLocaleString("id-ID");
 
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
+  return (
+    <>
+      <div className="container">
+        <h1>Manajemen Paket</h1>
 
-        if (editId) {
-            setData(
-                data.map((item) =>
-                    item.id === editId ? { ...form, id: editId } : item
-                )
-            );
-            setEditId(null);
-        } else {
-            setData([...data, { ...form, id: Date.now() }]);
-        }
+        <form onSubmit={handleSubmit} className="card form">
+          <input
+            placeholder="Nama Paket"
+            value={form.nama}
+            onChange={(e) =>
+              setForm({ ...form, nama: e.target.value })
+            }
+            required
+          />
 
+          <input
+            type="text"
+            placeholder="Harga"
+            value={form.harga}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                harga: e.target.value.replace(/\D/g, ""),
+              })
+            }
+            required
+          />
 
-    };
+          <button className="btn-primary">
+            {editId ? "Update" : "Tambah"}
+          </button>
+        </form>
 
-    const handleEdit = (item: Paket) => {
-        setForm({
-            nama: item.nama,
-            harga: item.harga,
-        });
-        setEditId(item.id);
-    };
-
-    const handleDelete = (id: number) => {
-        if (confirm("Yakin hapus karyawan?")) {
-            setData(data.filter((item) => item.id !== id));
-        }
-    };
-
-    return (
-        <>
-            <div className="container">
-                <h1>Manajemen Paket</h1>
-
-                <form onSubmit={handleSubmit} className="card form">
-                    <input
-                        placeholder="Nama Paket"
-                        value={form.nama}
-                        onChange={(e) => setForm({ ...form, nama: e.target.value })}
-                        required
-                    />
-                    <input
-                        type="number"
-                        placeholder="Harga"
-                        value={form.harga}
-                        onChange={(e) =>
-                            setForm({ ...form, harga: Number(e.target.value) })
-                        }
-                        required
-                    />
-                    <button className="btn-primary">
-                        {editId ? "Update" : "Tambah"}
+        <div className="card">
+          <table>
+            <thead>
+              <tr>
+                <th>Nama Paket</th>
+                <th>Harga</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((item) => (
+                <tr key={item.id}>
+                  <td>{item.nama}</td>
+                  <td>{formatRupiah(item.harga)}</td>
+                  <td>
+                    <button
+                      className="btn-edit"
+                      onClick={() => handleEdit(item)}
+                    >
+                      Edit
                     </button>
-                </form>
+                    <button
+                      className="btn-delete"
+                      onClick={() => handleDelete(item.id)}
+                    >
+                      Hapus
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {data.length === 0 && (
+                <tr>
+                  <td colSpan={3} align="center">
+                    Data paket kosong
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-                <div className="card">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nama Paket</th>
-                                <th>Harga</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data.map((item) => (
-                                <tr key={item.id}>
-                                    <td>{item.nama}</td>
-                                    <td>Rp {item.harga}</td>
-                                    <td>
-                                        <button className="btn-edit" onClick={() => handleEdit(item)}>
-                                            Edit
-                                        </button>
-                                        <button
-                                            className="btn-delete"
-                                            onClick={() => handleDelete(item.id)}
-                                        >
-                                            Hapus
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <style jsx>{`
+      <style jsx>{`
         .container {
           padding: 24px;
           background: #f1f5f9;
@@ -191,6 +232,6 @@ export default function Page() {
           border-radius: 4px;
         }
       `}</style>
-        </>
-    );
+    </>
+  );
 }
