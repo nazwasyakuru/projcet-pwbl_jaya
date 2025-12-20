@@ -2,24 +2,24 @@
 
 import { useState, FormEvent } from "react";
 
-interface Karyawan {
+interface Paket {
     id: number;
     nama: string;
-    username: string;
-    email: string;
+    harga: number;
 }
 
+
 export default function Page() {
-    const [data, setData] = useState<Karyawan[]>([
-        { id: 1, nama: "Andi Wijaya", username: "andi", email: "andi@gmail.com" },
-        { id: 2, nama: "Budi Santoso", username: "budi", email: "budi@gmail.com" },
+    const [data, setData] = useState<Paket[]>([
+        { id: 1, nama: "Cuci Kering", harga: 5000 },
+        { id: 2, nama: "Cuci Setrika", harga: 7000 },
     ]);
 
-    const [form, setForm] = useState<Omit<Karyawan, "id">>({
+    const [form, setForm] = useState<Omit<Paket, "id">>({
         nama: "",
-        username: "",
-        email: "",
+        harga: 0,
     });
+
 
     const [editId, setEditId] = useState<number | null>(null);
 
@@ -37,11 +37,14 @@ export default function Page() {
             setData([...data, { ...form, id: Date.now() }]);
         }
 
-        setForm({ nama: "", username: "", email: "" });
+
     };
 
-    const handleEdit = (item: Karyawan) => {
-        setForm(item);
+    const handleEdit = (item: Paket) => {
+        setForm({
+            nama: item.nama,
+            harga: item.harga,
+        });
         setEditId(item.id);
     };
 
