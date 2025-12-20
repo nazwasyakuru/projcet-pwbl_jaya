@@ -8,7 +8,7 @@ export default function HomePage() {
   const isLoggedIn = false;
 
   const protectedRoute = (path: string) =>
-    isLoggedIn ? path : "/login";
+    isLoggedIn ? path : "/loginuser";
 
   // state untuk menu mobile
   const [open, setOpen] = useState(false);
@@ -39,7 +39,7 @@ export default function HomePage() {
             <Link href={protectedRoute("/tracking")} className="hover:text-emerald-500">
               Tracking
             </Link>
-            <Link href="/login" className="hover:text-emerald-500">
+            <Link href="/loginuser" className="hover:text-emerald-500">
               Sign In
             </Link>
           </nav>
