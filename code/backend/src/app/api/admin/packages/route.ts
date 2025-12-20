@@ -28,3 +28,12 @@ export async function POST(req: Request) {
 }
 
 
+//get
+export async function GET(req: Request) {
+  const user = verifyAdmin(req as any);
+  if (!user || user.role !== "admin") {
+    return NextResponse.json({ message: "Admin only" }, { status: 403 });
+  }
+  const packages = await prisma.package.findMany();
+  return NextResponse.json(packages);
+}
