@@ -21,7 +21,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_URL}/users/login`, {
+      const res = await fetch(`${API_URL}/admin/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +61,7 @@ export default function LoginPage() {
     <div className="flex items-center justify-center min-h-screen bg-gray-200">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
         <h1 className="text-2xl font-bold text-center mb-6">
-          Login User
+          Login Admin
         </h1>
 
         {error && (
@@ -107,34 +107,6 @@ export default function LoginPage() {
             {loading ? "Loading..." : "Login"}
           </button>
         </form>
-
-        <div className="mt-6 text-center text-sm text-gray-600">
-          <p>
-            Belum punya akun?{" "}
-            <a
-              href="/register"
-              className="text-teal-600 font-medium hover:underline"
-            >
-              Daftar
-            </a>
-          </p>
-
-          <div className="mt-3 flex justify-center gap-4 text-xs">
-            <a
-              href="/forgot-password"
-              className="text-teal-600 hover:underline"
-            >
-              Lupa Password
-            </a>
-            <span className="text-gray-400">|</span>
-            <a
-              href="/contact"
-              className="text-teal-600 hover:underline"
-            >
-              Kontak Kami
-            </a>
-          </div>
-        </div>
       </div>
     </div>
   );
