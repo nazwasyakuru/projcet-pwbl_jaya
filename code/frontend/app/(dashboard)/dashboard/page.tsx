@@ -1,5 +1,8 @@
 "use client";
 
+import Link from "next/link"; // ✅ TAMBAH
+import { orders } from "@/app/data/orders"; // ✅ TAMBAH
+
 type StatusPesanan =
   | "Penjemputan"
   | "Dicuci"
@@ -16,35 +19,11 @@ interface Order {
 }
 
 export default function DashboardPage() {
-  // ======================
-  // DATA DUMMY ORDER
-  // ======================
-  const orders: Order[] = [
-    {
-      id: 1,
-      nama: "Ani",
-      paket: "Reguler",
-      total: 25000,
-      status: "Dicuci",
-    },
-    {
-      id: 2,
-      nama: "Budi",
-      paket: "Express",
-      total: 40000,
-      status: "Diproses",
-    },
-    {
-      id: 3,
-      nama: "Siti",
-      paket: "Reguler",
-      total: 30000,
-      status: "Siap Diantar",
-    },
-  ];
+  // ❌ HAPUS DATA DUMMY orders DI SINI
+  // const orders: Order[] = [ ... ];
 
   // ======================
-  // LOGIC DASHBOARD
+  // LOGIC DASHBOARD (TETAP)
   // ======================
   const pesananMasuk = orders.length;
 
@@ -103,7 +82,11 @@ export default function DashboardPage() {
       <div className="table-card">
         <div className="table-header">
           <h3>Daftar Pesanan Aktif</h3>
-          <a className="link">Lihat Semua Order</a>
+
+          {/* 🔁 GANTI <a> */}
+          <Link href="/orders" className="link">
+            Lihat Semua Order
+          </Link>
         </div>
 
         <table>
@@ -138,7 +121,10 @@ export default function DashboardPage() {
                   </span>
                 </td>
                 <td>
-                  <button className="btn-link">Detail</button>
+                  {/* 🔁 GANTI <button> */}
+                  <Link href="/orders" className="btn-link">
+                    Detail
+                  </Link>
                 </td>
               </tr>
             ))}
@@ -146,7 +132,7 @@ export default function DashboardPage() {
         </table>
       </div>
 
-      {/* STYLE */}
+      {/* STYLE (TIDAK DIUBAH) */}
       <style jsx>{`
         .container {
           padding: 24px;
@@ -215,10 +201,6 @@ export default function DashboardPage() {
           padding: 12px;
           font-size: 14px;
           border-bottom: 1px solid #e5e7eb;
-        }
-
-        th {
-          text-align: left;
         }
 
         .status {
