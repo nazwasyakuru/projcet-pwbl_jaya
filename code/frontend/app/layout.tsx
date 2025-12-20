@@ -1,15 +1,27 @@
+"use client";
+
 import "./globals.css";
+import Sidebar from "./components/sidebar";
+import Navbar from "./components/navbar";
 
-export const metadata = {
-  title: "Clean Route Laundry",
-  description: "Aplikasi Laundry dengan fitur Tracking",
-};
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="id">
-      <body className="bg-gray-100 min-h-screen">
-        {children}
+      <body>
+        <div className="flex min-h-screen bg-gray-100">
+          {/* Sidebar */}
+          <Sidebar />
+
+          {/* Konten kanan */}
+          <div className="flex-1 flex flex-col">
+            <Navbar />
+            <main className="flex-1 p-6">{children}</main>
+          </div>
+        </div>
       </body>
     </html>
   );
