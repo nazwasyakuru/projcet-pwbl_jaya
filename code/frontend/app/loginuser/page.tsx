@@ -3,6 +3,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Link from "next/link";
 
 const API_URL = "http://localhost:3000/api";
 
@@ -16,14 +17,14 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("LOGIN SUBMIT"); 
+    console.log("LOGIN SUBMIT");
 
     setError("");
     setLoading(true);
 
     try {
       const res = await fetch(`${API_URL}/users/login`, {
-        method: "POST", 
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -109,12 +110,10 @@ export default function LoginPage() {
         <div className="mt-6 text-center text-sm text-gray-600">
           <p>
             Belum punya akun?{" "}
-            <a
-              href="/register"
-              className="text-teal-600 font-medium hover:underline"
-            >
+            <Link href="/register" className="text-teal-600 font-medium hover:underline">
               Daftar
-            </a>
+            </Link>
+
           </p>
 
           <div className="mt-3 flex justify-center gap-4 text-xs">
