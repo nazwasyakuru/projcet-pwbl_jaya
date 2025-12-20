@@ -49,4 +49,24 @@ export async function PUT(req: Request, { params }: Params) {
   }
 }
 
+// delete
+export async function DELETE(req: Request, { params }: Params) {
+  const user = verifyAdmin(req as any);
 
+  if (!user || user.role !== "admin") {
+    return NextResponse.json({ message: "Admin only" }, { status: 403 });
+  }
+
+  try {
+    await prisma.package.delete({
+      where: { id: params.id },
+    });
+
+    return NextResponse.json({ message: "Package berhasil dihapus" });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Package tidak ditemukan" },
+      { status: 404 }
+    );
+  }
+}
