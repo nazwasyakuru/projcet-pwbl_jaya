@@ -10,7 +10,7 @@ type StatusPesanan =
   | "Siap Diantar"
   | "Selesai";
 
-interface Order {
+interface orders {
   id: number;
   nama: string;
   paket: string;
