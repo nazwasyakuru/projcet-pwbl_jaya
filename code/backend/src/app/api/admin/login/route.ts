@@ -12,29 +12,64 @@ export async function OPTIONS() {
 
 export async function POST(req: Request) {
   try {
-    const { username, password } = await req.json() as { username: string; password: string };
+    const body = await req.json();
+    const { username, password } = body as { username: string; password: string };
+
+    if (!username || !password) {
+      return cors(
+        NextResponse.json(
+          { message: "Username dan password wajib diisi" },
+          { status: 400 }
+        )
+      );
+    }
 
     const admin = await prisma.admin.findUnique({
       where: { username },
     });
 
     if (!admin) {
-      return NextResponse.json({ message: "Admin tidak ditemukan" }, { status: 404 });
+      return cors(
+        NextResponse.json(
+          { message: "Admin tidak ditemukan" },
+          { status: 404 }
+        )
+      );
     }
 
     const isValid = await bcrypt.compare(password, admin.password);
     if (!isValid) {
-      return NextResponse.json({ message: "Password salah" }, { status: 401 });
+      return cors(
+        NextResponse.json(
+          { message: "Password salah" },
+          { status: 401 }
+        )
+      );
     }
 
     const token = jwt.sign(
-      { id: admin.id, username: admin.username, role: "admin" },
+      {
+        id: Number(admin.id),
+        username: admin.username,
+        role: "admin",
+      },
       process.env.JWT_SECRET!,
       { expiresIn: "1d" }
     );
 
-    return NextResponse.json({ message: "Login berhasil", token });
+    return cors(
+      NextResponse.json(
+        { message: "Login berhasil", token },
+        { status: 200 }
+      )
+    );
   } catch (error) {
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    console.error("ADMIN LOGIN ERROR:", error);
+    return cors(
+      NextResponse.json(
+        { message: "Internal server error" },
+        { status: 500 }
+      )
+    );
   }
 }
