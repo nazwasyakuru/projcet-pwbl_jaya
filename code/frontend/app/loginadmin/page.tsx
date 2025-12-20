@@ -6,26 +6,46 @@ import { login } from "@/lib/auth";
 
 const API_URL = "http://localhost:3000/api/admin/login";
 
-export default function LoginPage() {
+export default function AdminLoginPage() {
   const router = useRouter();
 
-  const [username, setusername] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("LOGIN SUBMIT");
-
     setError("");
     setLoading(true);
 
     try {
-      await login({ role: "admin", username, password });
-      router.push("/admin/dashboard");
-    } catch (err: any) {
-      setError(err.message);
+      const res = await fetch("http://localhost:3000/api/admin/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const text = await res.text();
+      console.log("STATUS:", res.status);
+      console.log("BODY:", text);
+
+      if (!res.ok) {
+        setError("Username atau password salah");
+        return;
+      }
+
+      const data = JSON.parse(text);
+
+      localStorage.setItem("admin_token", data.token);
+
+      router.push("/dashboard/dashboardadmin");
+
+    } catch (err) {
+      console.error("ADMIN LOGIN ERROR:", err);
+      setError("Gagal terhubung ke server");
     } finally {
       setLoading(false);
     }
@@ -52,7 +72,7 @@ export default function LoginPage() {
             <input
               type="username"
               value={username}
-              onChange={(e) => setusername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
               className="w-full border px-3 py-2 rounded-md"
               placeholder="Masukkan username"
               required

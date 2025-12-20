@@ -2,19 +2,20 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { cors } from "@/lib/cors";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
+
+export async function OPTIONS() {
+  return cors(new NextResponse(null, { status: 204 }));
+}
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json() as {
-      username: string;
-      password: string;
-    };
-    const { username, password } = body;
+    const { username, password } = await req.json() as { username: string; password: string };
 
     const admin = await prisma.admin.findUnique({
-      where: { username }
+      where: { username },
     });
 
     if (!admin) {
