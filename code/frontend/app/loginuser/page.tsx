@@ -23,34 +23,32 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_URL}/users/login`, {
+      const res = await fetch("http://localhost:3000/api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+        body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
-      console.log("LOGIN RESPONSE:", data);
+      const text = await res.text();
+      console.log("STATUS:", res.status);
+      console.log("BODY:", text);
 
       if (!res.ok) {
-        setError(data.message || "Login gagal");
-        setLoading(false);
+        setError("Email atau password salah");
         return;
       }
 
-      // SIMPAN TOKEN
+      const data = JSON.parse(text);
+
       localStorage.setItem("token", data.token);
 
-      // REDIRECT
-      router.push("/dashboard");
+      router.push("/");
+
     } catch (err) {
-      console.error(err);
-      setError("Gagal menghubungi server");
+      console.error("LOGIN ERROR:", err);
+      setError("Gagal terhubung ke server");
     } finally {
       setLoading(false);
     }

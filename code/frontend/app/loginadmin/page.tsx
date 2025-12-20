@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { login } from "@/lib/auth";
 
 const API_URL = "http://localhost:3000/api/admin/login";
 
@@ -21,37 +22,10 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_URL}/admin/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-      });
-
-      const data = await res.json();
-      console.log("LOGIN RESPONSE:", data);
-
-      if (!res.ok) {
-        setError(data.message || "Login gagal");
-        setLoading(false);
-        return;
-      }
-
-      // SIMPAN TOKEN
-      if (typeof window !== "undefined") {
-        localStorage.setItem("token", data.token);
-      }
-
-
-      // REDIRECT
-      router.push("/dashboard");
-    } catch (err) {
-      console.error(err);
-      setError("Gagal menghubungi server");
+      await login({ role: "admin", username, password });
+      router.push("/admin/dashboard");
+    } catch (err: any) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }

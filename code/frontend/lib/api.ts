@@ -1,4 +1,5 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+export const API_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 if (!API_URL) {
   throw new Error("API URL tidak ditemukan. Cek NEXT_PUBLIC_API_URL");
