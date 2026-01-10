@@ -28,7 +28,7 @@ export default function OrderPage() {
           {/* Cuci Komplit */}
           <div className="border rounded-lg p-6 text-center hover:shadow-lg cursor-pointer transition">
             <Image
-              src="/img/cuci-komplit.png"
+              src="/img/cuci-komplit.jpg"
               alt="Cuci Komplit"
               width={120}
               height={120}
@@ -40,7 +40,7 @@ export default function OrderPage() {
           {/* Dry Clean */}
           <div className="border rounded-lg p-6 text-center hover:shadow-lg cursor-pointer transition">
             <Image
-              src="/img/dry-clean.png"
+              src="/img/dry-clean.jpg"
               alt="Dry Clean"
               width={120}
               height={120}
@@ -52,7 +52,7 @@ export default function OrderPage() {
           {/* Cuci Satuan */}
           <div className="border rounded-lg p-6 text-center hover:shadow-lg cursor-pointer transition">
             <Image
-              src="/img/cuci-satuan.png"
+              src="/img/cuci-satuan.jpg"
               alt="Cuci Satuan"
               width={120}
               height={120}
