@@ -84,7 +84,7 @@ export default function DashboardPage() {
           <h3>Daftar Pesanan Aktif</h3>
 
           {/* 🔁 GANTI <a> */}
-          <Link href="/orders" className="link">
+          <Link href="/dashboard/orders" className="link">
             Lihat Semua Order
           </Link>
         </div>
@@ -122,7 +122,7 @@ export default function DashboardPage() {
                 </td>
                 <td>
                   {/* 🔁 GANTI <button> */}
-                  <Link href="/orders" className="btn-link">
+                  <Link href="/dashboard/orders" className="btn-link">
                     Detail
                   </Link>
                 </td>
