@@ -3,10 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-/**
- * Halaman untuk memilih paket laundry
- * Klik salah satu paket untuk masuk ke halaman form order
- */
 export default function OrderPage() {
   return (
     <main className="min-h-screen bg-sky-50 px-4 py-6">
@@ -20,7 +16,7 @@ export default function OrderPage() {
           {/* Tombol kembali ke dashboard user */}
           <Link
             href="/user"
-            className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm"
+            className="bg-teal-600 text-white px-4 py-2 rounded-md text-sm"
           >
             Kembali
           </Link>
