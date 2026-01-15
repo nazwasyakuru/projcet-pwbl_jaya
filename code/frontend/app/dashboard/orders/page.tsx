@@ -22,7 +22,7 @@ const formatRupiah = (value: number) =>
   "Rp " + value.toLocaleString("id-ID");
 
 export default function OrdersPage() {
-  // ⬇️ state lokal agar status bisa diubah
+  //state lokal agar status bisa diubah
   const [orders, setOrders] = useState(initialOrders);
 
   const nextStatus = (current: StatusPesanan): StatusPesanan => {
