@@ -1,26 +1,71 @@
 "use client";
-
-import Link from "next/link";
+import { useState } from "react";
 export default function Navbar() {
+    const [open, setOpen] = useState(false);
+
     return (
-        <header className="bg-white shadow-sm">
+        <header className="bg-white shadow-sm sticky top-0 z-50">
+            {/* CONTAINER UTAMA NAVBAR */}
             <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+
+                {/*LEFT: LOGO & NAMA APP*/}
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold">CR</div>
-                    <div>
-                        <div className="font-semibold text-sm">Clean Route Laundry</div>
-                        <div className="text-xs text-gray-500">Admin Panel</div>
+                    {/*LOGO BULAT*/}
+                    <div className="w-10 h-10 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold">
+                        CR
+                    </div>
+
+                    {/*NAMA APP*/}
+                    <div className="leading-tight">
+                        <div className="font-semibold text-sm">
+                            Clean Route Laundry
+                        </div>
+                        <div className="text-xs text-gray-500">
+                            Admin Panel
+                        </div>
                     </div>
                 </div>
-                <nav className="flex items-center gap-4 text-sm">
-                    <Link href="/dashboard" className="text-gray-600 hover:text-teal-600">Dashboard</Link>
-                    <Link href="/orders" className="text-gray-600 hover:text-teal-600">Pesanan</Link>
-                    <Link href="/transactions" className="text-gray-600 hover:text-teal-600">Transaksi</Link>
-                    <button className="px-3 py-1 rounded bg-teal-500 text-white text-sm">Admin</button>
-                </nav>
+
+                {/*RIGHT: ADMIN BUTTON*/}
+                <div className="relative">
+                    {/* BUTTON ADMIN */}
+                    <button
+                        onClick={() => setOpen(!open)}
+                        className="px-4 py-2 rounded-md bg-teal-500 text-white text-sm flex items-center gap-2"
+                    >
+                        Admin
+                        <span className="text-xs">▼</span>
+                    </button>
+
+                    {/*DROPDOWN MENU*/}
+                    {open && (
+                        <div className="absolute right-0 mt-2 w-40 bg-white border rounded-md shadow-lg overflow-hidden">
+
+                            {/*EDIT PROFILE*/}
+                            <button
+                                className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                                onClick={() => {
+                                    setOpen(false);
+                                    alert("Edit Profile (dummy)");
+                                }}
+                            >
+                                Edit Profile
+                            </button>
+
+                            {/*LOGOUT*/}
+                            <button
+                                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                                onClick={() => {
+                                    setOpen(false);
+                                    alert("Logout (dummy)");
+                                }}
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    )}
+                </div>
             </div>
         </header>
     );
 }
-
-

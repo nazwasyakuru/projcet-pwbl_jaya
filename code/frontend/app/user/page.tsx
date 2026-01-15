@@ -43,7 +43,7 @@ export default function HomePage() {
                             Tracking
                         </Link>
                         <Link href="/loginuser" className="hover:text-emerald-500">
-                            Sign In
+                            Log Out
                         </Link>
                     </nav>
 
