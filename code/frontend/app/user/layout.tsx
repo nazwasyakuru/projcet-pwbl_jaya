@@ -14,7 +14,7 @@ export default function UserLayout({
     { name: "Home", href: "/user" },
     { name: "Order", href: "/user/order" },
     { name: "Tracking", href: "/user/tracking" },
-    { name: "Sign in", href: "/signin" },
+    { name: "Log Out", href: "/Lof Out" },
   ];
 
   return (
