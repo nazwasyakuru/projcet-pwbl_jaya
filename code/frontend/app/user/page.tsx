@@ -110,9 +110,9 @@ export default function HomePage() {
                     </div>
 
                     {/* IMAGE */}
-                    <div className="relative w-full h-[360px] md:h-[420px] rounded-2xl overflow-hidden shadow-xl">
+                    <div className="relative w-full h-[360px] md:h-[420px] rounded-1xl overflow-hidden shadow-xl">
                         <Image
-                            src="/img/laundry.jpg"
+                            src="/img/cuci-komplit.jpg"
                             alt="Laundry"
                             fill
                             className="object-cover"
