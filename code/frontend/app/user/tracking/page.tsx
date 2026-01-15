@@ -72,6 +72,10 @@ export default function TrackingPage() {
         </div>
 
       </div>
+      {/* FOOTER */}
+      <footer className="text-center text-sm text-gray-500 py-8">
+        © 2025 Clean Route Laundry
+      </footer>
     </main>
   );
 }
