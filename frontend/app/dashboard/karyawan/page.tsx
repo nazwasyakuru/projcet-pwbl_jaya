@@ -1,21 +1,23 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { apiFetch } from "@/lib/api";
 
-/*TIPE DATA KARYAWAN Digunakan agar data konsisten*/
-interface Karyawan {
+/*TIPE DATA users*/
+interface UserData {
   id: number;
-  nama: string;
+  name: string;
   username: string;
   email: string;
 }
 
 export default function Page() {
-  /*STATE DATA KARYAWAN (Dummy sementara)*/
-  const [data, setData] = useState<Karyawan[]>([
-    { id: 1, nama: "Andi Wijaya", username: "andi", email: "andi@gmail.com" },
-    { id: 2, nama: "Budi Santoso", username: "budi", email: "budi@gmail.com" },
-  ]);
+  const router = useRouter();
+  const [data, setData] = useState<UserData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
 
   /*STATE FORM INPUT id tidak ikut karena auto*/
   const [form, setForm] = useState<Omit<Karyawan, "id">>({

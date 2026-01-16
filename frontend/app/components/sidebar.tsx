@@ -97,7 +97,7 @@ export default function Sidebar() {
                   : "hover:bg-gray-100"
                 }`}
             >
-              Karyawan
+              Customers
             </Link>
           </li>
 
