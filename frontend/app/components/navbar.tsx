@@ -21,7 +21,22 @@ export default function Navbar() {
                     return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
                 }).join(''));
 
-               
+                const payload = JSON.parse(jsonPayload);
+                if (payload.username) {
+                    setUsername(payload.username);
+                }
+            } catch (e) {
+                console.error("Failed to parse token", e);
+            }
+        }
+    }, []);
+
+    const handleLogout = () => {
+        if (confirm("Yakin ingin keluar?")) {
+            localStorage.removeItem("admin_token");
+            router.push("/loginadmin");
+        }
+    };
     return (
         <header className="bg-white shadow-sm sticky top-0 z-50">
             {/* CONTAINER UTAMA NAVBAR */}
