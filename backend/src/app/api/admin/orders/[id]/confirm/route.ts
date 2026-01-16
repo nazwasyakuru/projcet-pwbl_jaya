@@ -52,7 +52,7 @@ export async function PATCH(
   weight
   );
 // UPDATE ORDER DAN TAMBAH TRACKING DENGAN TRANSAKSI
-  const updatedOrder = await prisma.$transaction(async (tx) => {
+  const updatedOrder = await prisma.$transaction(async (tx: PrismaClient) => {
     const updated = await tx.order.update({
       where: { id },
       data: {
