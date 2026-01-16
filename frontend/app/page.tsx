@@ -1,130 +1,78 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-
 export default function HomePage() {
-    // SIMULASI STATUS LOGIN
+    /*SIMULASI STATUS LOGIN*/
     const isLoggedIn = false;
 
-    const protectedRoute = (path: string) =>
-        isLoggedIn ? path : "/loginuser";
-
-    // state untuk menu mobile
-    const [open, setOpen] = useState(false);
+    /*Jika sudah login → langsung ke halaman user,Jika belum login → ke halaman login*/
+    const loginRoute = isLoggedIn ? "/user" : "/loginuser";
 
     return (
-        <main className="min-h-screen bg-white">
+        <main className="min-h-screen flex flex-col bg-linear-to-br from-teal-50 to-teal-100">
 
-            {/* NAVBAR */}
-            <header className="fixed top-0 w-full bg-white shadow-sm z-50">
-                <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+            {/*CONTENT*/}
+            <div className="flex-1 flex items-center justify-center px-4">
 
-                    {/* LOGO */}
-                    <div className="flex items-center gap-2 font-bold text-lg">
-                        <span className="bg-emerald-500 text-white px-3 py-1 rounded-full">
-                            CR
-                        </span>
-                        Clean Route Laundry
-                    </div>
+                {/* CARD */}
+                <div className="w-full max-w-5xl bg-white rounded-2xl shadow-xl overflow-hidden grid md:grid-cols-2">
 
-                    {/* MENU DESKTOP */}
-                    <nav className="hidden md:flex gap-8 text-sm font-medium">
-                        <Link href={protectedRoute("/")} className="hover:text-emerald-500">
-                            Home
-                        </Link>
-                        <Link href={protectedRoute("/order")} className="hover:text-emerald-500">
-                            Order
-                        </Link>
-                        <Link href={protectedRoute("/tracking")} className="hover:text-emerald-500">
-                            Tracking
-                        </Link>
-                        <Link href="/loginuser" className="hover:text-emerald-500">
-                            Sign In
-                        </Link>
-                    </nav>
+                    {/*EFT SIDE*/}
+                    <div className="p-8 md:p-12 flex flex-col justify-center">
 
-                    {/* BUTTON MOBILE */}
-                    <button
-                        onClick={() => setOpen(!open)}
-                        className="md:hidden text-2xl"
-                    >
-                        ☰
-                    </button>
-                </div>
+                        {/* LOGO */}
+                        <div className="flex items-center gap-2 mb-10">
+                            <span className="text-3xl font-bold text-teal-600">CR</span>
+                            <span className="font-semibold text-lg">Laundry</span>
+                        </div>
 
-                {/* MENU MOBILE */}
-                {open && (
-                    <div className="md:hidden border-t bg-white">
-                        <nav className="flex flex-col px-6 py-6 gap-4 text-sm font-medium">
-                            <Link href={protectedRoute("/")} onClick={() => setOpen(false)}>
-                                Home
-                            </Link>
-                            <Link href={protectedRoute("/order")} onClick={() => setOpen(false)}>
-                                Order
-                            </Link>
-                            <Link href={protectedRoute("/tracking")} onClick={() => setOpen(false)}>
-                                Tracking
-                            </Link>
-                            <Link href="/loginuser" onClick={() => setOpen(false)}>
-                                Sign In
-                            </Link>
-
-                        </nav>
-                    </div>
-                )}
-            </header>
-
-            {/* HERO */}
-            <section className="pt-32 pb-20 px-6">
-                <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-14 items-center">
-
-                    <div>
-                        <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-                            Laundry Bersih <br /> Cepat & Terpercaya
+                        {/* TITLE */}
+                        <h1 className="text-2xl md:text-3xl font-bold mb-6">
+                            Selamat Datang 👋
                         </h1>
 
-                        <p className="text-gray-600 mb-8">
-                            Clean Route Laundry menyediakan layanan laundry profesional
-                            dengan sistem pemesanan dan tracking online.
+                        {/* DESCRIPTION */}
+                        <p className="text-gray-600 mb-10 leading-relaxed">
+                            Sistem manajemen laundry modern untuk memudahkan pemesanan,
+                            pelacakan, dan pengelolaan laundry secara digital.
                         </p>
 
-                        <div className="flex flex-wrap gap-4">
-                            <Link
-                                href={protectedRoute("/order")}
-                                className="bg-emerald-500 text-white px-8 py-3 rounded-full"
-                            >
-                                Order Sekarang
-                            </Link>
+                        {/* LOGIN BUTTON */}
+                        <Link
+                            href={loginRoute}
+                            className="w-full md:w-fit text-center bg-linear-to-r from-teal-500 to-teal-600 text-white px-10 py-3 rounded-full font-semibold hover:opacity-90 transition"
+                        >
+                            LOGIN
+                        </Link>
+                    </div>
 
-                            <Link
-                                href={protectedRoute("/tracking")}
-                                className="border border-emerald-500 text-emerald-600 px-8 py-3 rounded-full"
-                            >
-                                Cek Status
-                            </Link>
+                    {/*RIGHT SIDE*/}
+                    <div className="relative hidden md:flex items-center justify-center bg-linear-to-br from-teal-500 to-teal-700">
+
+                        {/* ILLUSTRATION */}
+                        <Image
+                            src="/img/laundry2.jpg"
+                            alt="Laundry Illustration"
+                            width={250}
+                            height={350}
+                            priority
+                        />
+
+                        {/* ICONS */}
+                        <div className="absolute right-10 bottom-12 flex flex-col gap-4">
+                            <div className="bg-white p-3 rounded-full shadow">👕</div>
+                            <div className="bg-white p-3 rounded-full shadow">👖</div>
+                            <div className="bg-white p-3 rounded-full shadow">👚</div>
                         </div>
                     </div>
 
-                    {/* IMAGE */}
-                    <div className="relative w-full h-[360px] md:h-[420px] rounded-2xl overflow-hidden shadow-xl">
-                        <Image
-                            src="/img/laundry.jpg"
-                            alt="Laundry"
-                            fill
-                            className="object-cover"
-                            priority
-                        />
-                    </div>
-
-
                 </div>
-            </section>
+            </div>
 
-            {/* FOOTER */}
-            <footer className="text-center text-sm text-gray-500 py-8">
+            {/*FOOTER*/}
+            <footer className="text-center text-sm text-gray-500 py-6">
                 © 2025 Clean Route Laundry
             </footer>
 

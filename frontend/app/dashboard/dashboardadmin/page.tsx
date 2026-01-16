@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link"; // ✅ TAMBAH
-import { orders } from "@/app/data/orders"; // ✅ TAMBAH
+import Link from "next/link";
+import { orders } from "@/app/data/orders";
 
+/*TIPE STATUS PESANAN*/
 type StatusPesanan =
   | "Penjemputan"
   | "Dicuci"
@@ -10,6 +11,7 @@ type StatusPesanan =
   | "Siap Diantar"
   | "Selesai";
 
+/*TIPE DATA ORDER*/
 interface orders {
   id: number;
   nama: string;
@@ -18,44 +20,47 @@ interface orders {
   status: StatusPesanan;
 }
 
-export default function DashboardPage() {
-  // ❌ HAPUS DATA DUMMY orders DI SINI
-  // const orders: Order[] = [ ... ];
+export default function DashboardAdminPage() {
+  /* LOGIC DATA DASHBOARD*/
 
-  // ======================
-  // LOGIC DASHBOARD (TETAP)
-  // ======================
+  // Total seluruh pesanan
   const pesananMasuk = orders.length;
 
+  // Pesanan yang sedang diproses
   const sedangDiproses = orders.filter(
     (o) => o.status === "Dicuci" || o.status === "Diproses"
   ).length;
 
+  // Pesanan siap diantar
   const siapDiantar = orders.filter(
     (o) => o.status === "Siap Diantar"
   ).length;
 
+  // Total pendapatan
   const pendapatanHariIni = orders.reduce(
     (total, o) => total + o.total,
     0
   );
 
+  // Pesanan yang belum selesai
   const pesananAktif = orders.filter(
     (o) => o.status !== "Selesai"
   );
 
+  // Format angka ke Rupiah
   const formatRupiah = (value: number) =>
     "Rp " + value.toLocaleString("id-ID");
 
-  // ======================
-  // UI
-  // ======================
+  /*UI DASHBOARD*/
   return (
     <div className="container">
-      <h1>Dashboard</h1>
-      <p className="subtitle">Ringkasan operasional laundry</p>
+      {/*HEADER*/}
+      <h1>Dashboard Admin</h1>
+      <p className="subtitle">
+        Ringkasan operasional laundry hari ini
+      </p>
 
-      {/* CARD RINGKASAN */}
+      {/*CARD RINGKASAN*/}
       <div className="cards">
         <div className="card">
           <p>Pesanan Masuk</p>
@@ -73,75 +78,86 @@ export default function DashboardPage() {
         </div>
 
         <div className="card">
-          <p>Pendapatan Hari Ini</p>
+          <p>Pendapatan</p>
           <h2>{formatRupiah(pendapatanHariIni)}</h2>
         </div>
       </div>
 
-      {/* TABEL PESANAN AKTIF */}
+      {/*TABEL PESANAN*/}
       <div className="table-card">
         <div className="table-header">
-          <h3>Daftar Pesanan Aktif</h3>
+          <h3>Pesanan Aktif</h3>
 
-          {/* 🔁 GANTI <a> */}
-          <Link href="/dashboard/orders" className="link">
-            Lihat Semua Order
+          <Link
+            href="/dashboard/orders"
+            className="link"
+          >
+            Lihat Semua
           </Link>
         </div>
 
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Nama</th>
-              <th>Paket</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {pesananAktif.map((order, index) => (
-              <tr key={order.id}>
-                <td>{index + 1}</td>
-                <td>{order.nama}</td>
-                <td>{order.paket}</td>
-                <td>{formatRupiah(order.total)}</td>
-                <td>
-                  <span
-                    className={`status ${
-                      order.status === "Dicuci"
-                        ? "yellow"
-                        : order.status === "Diproses"
-                        ? "orange"
-                        : "green"
-                    }`}
-                  >
-                    {order.status}
-                  </span>
-                </td>
-                <td>
-                  {/* 🔁 GANTI <button> */}
-                  <Link href="/dashboard/orders" className="btn-link">
-                    Detail
-                  </Link>
-                </td>
+        {/*WRAPPER agar tabel bisa di-scroll di mobile*/}
+        <div className="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <th>Paket</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Aksi</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {pesananAktif.map((order, index) => (
+                <tr key={order.id}>
+                  <td>{index + 1}</td>
+                  <td>{order.nama}</td>
+                  <td>{order.paket}</td>
+                  <td>{formatRupiah(order.total)}</td>
+
+                  <td>
+                    <span
+                      className={`status ${order.status === "Dicuci"
+                          ? "yellow"
+                          : order.status === "Diproses"
+                            ? "orange"
+                            : "green"
+                        }`}
+                    >
+                      {order.status}
+                    </span>
+                  </td>
+
+                  <td>
+                    <Link
+                      href="/dashboard/orders"
+                      className="btn-link"
+                    >
+                      Detail
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      {/* STYLE (TIDAK DIUBAH) */}
+      {/*STYLE*/}
       <style jsx>{`
+        /*CONTAINER*/
         .container {
-          padding: 24px;
+          padding: 16px;
           background: #f1f5f9;
           min-height: 100vh;
         }
 
+        /*JUDUL*/
         h1 {
-          font-size: 24px;
+          font-size: 22px;
           font-weight: 600;
           color: #0d9488;
         }
@@ -149,32 +165,36 @@ export default function DashboardPage() {
         .subtitle {
           margin-bottom: 20px;
           color: #64748b;
+          font-size: 14px;
         }
 
+        /*CARD GRID*/
         .cards {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-          gap: 16px;
-          margin-bottom: 24px;
+          /* auto-fit = otomatis menyesuaikan layar */
+          grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+          gap: 12px;
+          margin-bottom: 20px;
         }
 
         .card {
           background: white;
-          padding: 16px;
+          padding: 14px;
           border-radius: 8px;
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .card h2 {
-          margin-top: 8px;
-          font-size: 22px;
+          margin-top: 6px;
+          font-size: 20px;
           font-weight: 600;
         }
 
+        /*TABLE CARD*/
         .table-card {
           background: white;
           border-radius: 8px;
-          padding: 16px;
+          padding: 14px;
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
@@ -187,22 +207,29 @@ export default function DashboardPage() {
 
         .link {
           color: #0d9488;
-          font-size: 14px;
-          cursor: pointer;
+          font-size: 13px;
+        }
+
+        /*RESPONSIVE TABLE*/
+        .table-wrapper {
+          overflow-x: auto; /* scroll horizontal di mobile */
         }
 
         table {
           width: 100%;
+          min-width: 600px; /*agar tabel tidak rusak di mobile*/
           border-collapse: collapse;
         }
 
         th,
         td {
-          padding: 12px;
-          font-size: 14px;
+          padding: 10px;
+          font-size: 13px;
           border-bottom: 1px solid #e5e7eb;
+          white-space: nowrap;
         }
 
+        /*STATUS BADGE*/
         .status {
           padding: 4px 10px;
           border-radius: 999px;
@@ -225,11 +252,9 @@ export default function DashboardPage() {
           color: #166534;
         }
 
+        /*BUTTON*/
         .btn-link {
-          background: none;
-          border: none;
           color: #0d9488;
-          cursor: pointer;
           font-weight: 500;
         }
       `}</style>
