@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 
@@ -19,49 +19,36 @@ export default function Page() {
   const [error, setError] = useState("");
 
 
-  /*STATE FORM INPUT id tidak ikut karena auto*/
-  const [form, setForm] = useState<Omit<Karyawan, "id">>({
-    nama: "",
-    username: "",
-    email: "",
-  });
+  // fetch data users
+  useEffect(() => {
+    // fungsi fetch users
+    const fetchUsers = async () => {
+      try {
+        // ambil token dari localStorage
+        const token = localStorage.getItem("admin_token");
+        if (!token) {
+          router.push("/loginadmin");
+          return;
+        }
+        // fetch users dari API
+        const users = await apiFetch("/api/admin/users", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setData(users);
+      } catch (err: any) {
+        console.error("Fetch Users Error:", err);
+        setError(err.message || "Gagal memuat data karyawan.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  /*STATE EDIT MODE null = tambah, ada id = edit*/
-  const [editId, setEditId] = useState<number | null>(null);
-
-  /*HANDLE SUBMIT FORM*/
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-
-    if (editId) {
-      // MODE EDIT DATA
-      setData(
-        data.map((item) =>
-          item.id === editId ? { ...form, id: editId } : item
-        )
-      );
-      setEditId(null);
-    } else {
-      // MODE TAMBAH DATA
-      setData([...data, { ...form, id: Date.now() }]);
-    }
-
-    // Reset form setelah submit
-    setForm({ nama: "", username: "", email: "" });
-  };
-
-  /*HANDLE EDIT BUTTON*/
-  const handleEdit = (item: Karyawan) => {
-    setForm(item);
-    setEditId(item.id);
-  };
-
-  /*HANDLE DELETE*/
-  const handleDelete = (id: number) => {
-    if (confirm("Yakin hapus karyawan?")) {
-      setData(data.filter((item) => item.id !== id));
-    }
-  };
+    fetchUsers();
+  }, [router]);
+  
+  
 
   /*UI*/
   return (
