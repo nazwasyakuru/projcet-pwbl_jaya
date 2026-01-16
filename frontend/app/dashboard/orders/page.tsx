@@ -1,52 +1,93 @@
 "use client";
 
-import { useState } from "react";
-import { orders as initialOrders } from "@/app/data/orders";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { apiFetch } from "@/lib/api";
 
-/*TYPE STATUS PESANAN*/
-type StatusPesanan =
-  | "Penjemputan"
-  | "Dicuci"
-  | "Diproses"
-  | "Siap Diantar"
-  | "Selesai";
+type Order = {
+  id: number;
+  name: string;
+  serviceType: string;
+  totalPrice: number;
+  status: string;
+  createdAt: string;
+};
 
-/*URUTAN STATUS (FLOW)*/
-const statusFlow: StatusPesanan[] = [
-  "Penjemputan",
-  "Dicuci",
-  "Diproses",
-  "Siap Diantar",
-  "Selesai",
-];
-
-/*FORMAT RUPIAH*/
+/* FORMAT RUPIAH */
 const formatRupiah = (value: number) =>
   "Rp " + value.toLocaleString("id-ID");
 
 export default function OrdersPage() {
-  /*STATE LOKAL ORDER(supaya admin bisa ubah status tanpa reload)*/
-  const [orders, setOrders] = useState(initialOrders);
+  const router = useRouter();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  /*AMBIL STATUS BERIKUTNYA*/
-  const nextStatus = (current: StatusPesanan): StatusPesanan => {
-    const idx = statusFlow.indexOf(current);
-    return idx < statusFlow.length - 1
-      ? statusFlow[idx + 1]
-      : current;
+  /* FETCH ORDERS */
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const token = localStorage.getItem("admin_token");
+        if (!token) {
+          router.push("/loginadmin");
+          return;
+        }
+
+        const data = await apiFetch("/api/admin/orders", {
+          headers: {
+            Authorization: Bearer ${token},
+          },
+        });
+
+        setOrders(data);
+      } catch (err: any) {
+        console.error("Fetch Orders Error:", err);
+        setError(err.message || "Gagal memuat daftar pesanan.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, [router]);
+
+  /* HELPER FOR STATUS BADGE COLOR */
+  const getStatusColor = (status: string) => {
+    const s = status.toUpperCase();
+    if (s === "CREATED" || s === "CONFIRMED") return "yellow";
+    if (s === "PROCESSING" || s === "WASHING" || s === "DRYING") return "orange";
+    if (s === "READY" || s === "COMPLETED") return "green";
+    return "gray";
   };
 
-  /*HANDLE BUTTON NEXT STATUS*/
-  const handleNextStatus = (id: number) => {
-    setOrders((prev) =>
-      prev.map((o) =>
-        o.id === id
-          ? { ...o, status: nextStatus(o.status) }
-          : o
-      )
+  /* HANDLE NEXT STATUS (TODO: Connect to Backend) */
+  const handleNextStatus = async (id: number, currentStatus: string) => {
+    alert("Fitur update status belum terhubung ke backend API.");
+    // Implementasi nanti:
+    // await apiFetch(/api/admin/orders/${id}/update, { method: 'PATCH', ... })
+  };
+
+  if (loading) {
+    return (
+      <div className="flex bg-gray-100 h-screen items-center justify-center">
+        <div className="text-teal-600 font-semibold text-lg">Loading Orders...</div>
+      </div>
     );
-  };
+  }
 
+  if (error) {
+    return (
+      <div className="flex bg-gray-100 h-screen flex-col items-center justify-center p-4">
+        <div className="text-red-500 mb-4">{error}</div>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700"
+        >
+          Coba Lagi
+        </button>
+      </div>
+    );
+  }
   return (
     <div className="container">
       <h1>Daftar Order</h1>
