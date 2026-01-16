@@ -31,7 +31,7 @@ export default function LoginPage() {
       console.log("LOGIN SUCCESS:", data);
 
       if (data.token) {
-        localStorage.setItem("token", data.token);
+        localStorage.setItem("user_token", data.token);
         router.push("/user");
       } else {
         throw new Error("Token tidak diterima dari server");
