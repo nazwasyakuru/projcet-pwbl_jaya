@@ -32,7 +32,7 @@ export default function LoginPage() {
 
       if (data.token) {
         localStorage.setItem("token", data.token);
-        router.push("./");
+        router.push("/user");
       } else {
         throw new Error("Token tidak diterima dari server");
       }
