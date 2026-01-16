@@ -48,6 +48,16 @@ export default function TrackingPage() {
       }
     };
 
+    fetchTracking();
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-sky-50 flex items-center justify-center">
+        <p className="text-teal-600 font-semibold">Memuat data tracking...</p>
+      </div>
+    );
+  }
   return (
     <main className="min-h-screen bg-sky-50 px-4 py-6">
       <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-md p-6">
