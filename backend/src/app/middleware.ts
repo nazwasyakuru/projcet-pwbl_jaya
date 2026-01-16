@@ -12,28 +12,37 @@ function setCorsHeaders(res: NextResponse) {
 
 // middleware
 export function middleware(req: NextRequest) {
-  console.log(`[MIDDLEWARE] ${req.method} ${req.nextUrl.pathname}`);
 
-  // 1. Tangani Permintaan Pra-Penerbangan (OPSI)
-  if (req.method === "OPTIONS") {
+    console.log(`[MIDDLEWARE] ${req.method} ${req.nextUrl.pathname}`);
+    
+    // 1. Tangani Permintaan Pra-Penerbangan (OPSI)
+    if (req.method === "OPTIONS") {
     console.log(`[MIDDLEWARE] Handling OPTIONS for ${req.nextUrl.pathname}`);
     return setCorsHeaders(new NextResponse(null, { status: 200 }));
-  }
+    }
     // 2. Verifikasi Admin untuk Rute Admin
   if (req.nextUrl.pathname.startsWith("/api/admin")) {
-    // Only check auth if NOT a login/register request (though admin usually doesn't have register)
-    // admin/login is public
+    //Periksa otentikasi hanya jika BUKAN permintaan login/registrasi (meskipun admin biasanya tidak perlu mendaftar).
+    // admin login ada di /api/admin/login
     if (!req.nextUrl.pathname.includes("/login")) {
-      const user = verifyAdminEdge(req);
-
-      if (!user || user.role !== "admin") {
-        return setCorsHeaders(
+        const user = verifyAdminEdge(req);
+        //cek apakah user ada dan role nya admin
+        if (!user || user.role !== "admin") {
+            return setCorsHeaders(
           NextResponse.json(
-            { message: "Unauthorized" },
+              { message: "Unauthorized" },
             { status: 401 }
           )
         );
-      }
     }
+ }
+}
 
   // 3. Kembalikan respons tanpa modifikasi untuk permintaan lain
+  const res = NextResponse.next();
+  return setCorsHeaders(res);
+}
+
+export const config = {
+  matcher: ["/api/:path*"],
+};
