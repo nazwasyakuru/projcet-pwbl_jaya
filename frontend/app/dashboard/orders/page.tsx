@@ -35,7 +35,7 @@ export default function OrdersPage() {
 
         const data = await apiFetch("/api/admin/orders", {
           headers: {
-            Authorization: Bearer ${token},
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -64,7 +64,7 @@ export default function OrdersPage() {
   const handleNextStatus = async (id: number, currentStatus: string) => {
     alert("Fitur update status belum terhubung ke backend API.");
     // Implementasi nanti:
-    // await apiFetch(/api/admin/orders/${id}/update, { method: 'PATCH', ... })
+    // await apiFetch(`/api/admin/orders/${id}/update`, { method: 'PATCH', ... })
   };
 
   if (loading) {
@@ -88,15 +88,17 @@ export default function OrdersPage() {
       </div>
     );
   }
+
   return (
     <div className="container">
       <h1>Daftar Order</h1>
 
-      {/*DESKTOP VIEW (TABLE)*/}
+      {/* DESKTOP VIEW (TABLE) */}
       <div className="card desktop-only">
         <table>
           <thead>
             <tr>
+              <th>ID</th>
               <th>Nama</th>
               <th>Paket</th>
               <th>Total</th>
@@ -107,71 +109,84 @@ export default function OrdersPage() {
           <tbody>
             {orders.map((order) => (
               <tr key={order.id}>
-                <td>{order.nama}</td>
-                <td>{order.paket}</td>
-                <td>{formatRupiah(order.total)}</td>
+                <td>#{order.id}</td>
+                <td>{order.name}</td>
+                <td>{order.serviceType}</td>
+                <td>{formatRupiah(order.totalPrice)}</td>
                 <td>
-                  <span className="status">
+                  <span className={`status ${getStatusColor(order.status)}`}>
                     {order.status}
                   </span>
                 </td>
                 <td>
                   <button
                     className="btn-primary"
-                    onClick={() => handleNextStatus(order.id)}
-                    disabled={order.status === "Selesai"}
+                    onClick={() => handleNextStatus(order.id, order.status)}
+                    disabled={order.status === "COMPLETED" || order.status === "CANCELED"}
                   >
-                    {order.status === "Selesai"
-                      ? "Selesai"
-                      : "Next Status"}
+                    Next Status
                   </button>
                 </td>
               </tr>
             ))}
+            {orders.length === 0 && (
+              <tr>
+                <td colSpan={6} className="text-center py-4 text-gray-500">
+                  Belum ada pesanan.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
 
-      {/* MOBILE VIEW (CARD LIST)*/}
+      {/* MOBILE VIEW (CARD LIST) */}
       <div className="mobile-only">
         {orders.map((order) => (
           <div className="order-card" key={order.id}>
             <div className="row">
+              <span>ID</span>
+              <strong>#{order.id}</strong>
+            </div>
+            <div className="row">
               <span>Nama</span>
-              <strong>{order.nama}</strong>
+              <strong>{order.name}</strong>
             </div>
 
             <div className="row">
               <span>Paket</span>
-              <strong>{order.paket}</strong>
+              <strong>{order.serviceType}</strong>
             </div>
 
             <div className="row">
               <span>Total</span>
-              <strong>{formatRupiah(order.total)}</strong>
+              <strong>{formatRupiah(order.totalPrice)}</strong>
             </div>
 
             <div className="row">
               <span>Status</span>
-              <span className="status">{order.status}</span>
+              <span className={`status ${getStatusColor(order.status)}`}>
+                {order.status}
+              </span>
             </div>
 
             <button
               className="btn-primary full"
-              onClick={() => handleNextStatus(order.id)}
-              disabled={order.status === "Selesai"}
+              onClick={() => handleNextStatus(order.id, order.status)}
+              disabled={order.status === "COMPLETED" || order.status === "CANCELED"}
             >
-              {order.status === "Selesai"
-                ? "Pesanan Selesai"
-                : "Next Status"}
+              Next Status
             </button>
           </div>
         ))}
+        {orders.length === 0 && (
+          <div className="text-center py-10 text-gray-500">Belum ada pesanan.</div>
+        )}
       </div>
 
-      {/*STYLE*/}
+      {/* STYLE */}
       <style jsx>{`
-        /*CONTAINER*/
+        /* CONTAINER */
         .container {
           padding: 24px;
           background: #f1f5f9;
@@ -181,9 +196,11 @@ export default function OrdersPage() {
         h1 {
           color: #0d9488;
           margin-bottom: 16px;
+          font-weight: 600;
+          font-size: 24px;
         }
 
-        /*CARD*/
+        /* CARD */
         .card {
           background: white;
           padding: 16px;
@@ -191,7 +208,7 @@ export default function OrdersPage() {
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
-        /*TABLE*/
+        /* TABLE */
         table {
           width: 100%;
           border-collapse: collapse;
@@ -205,17 +222,38 @@ export default function OrdersPage() {
           text-align: left;
         }
 
-        /*STATUS BADGE*/
+        th {
+          font-weight: 600;
+          color: #64748b;
+        }
+
+        /* STATUS BADGE */
         .status {
           padding: 4px 10px;
           border-radius: 999px;
-          background: #dcfce7;
-          color: #166534;
           font-size: 12px;
           font-weight: 500;
+          text-transform: uppercase;
         }
 
-        /*BUTTON*/
+        .status.yellow {
+          background: #fef3c7;
+          color: #92400e;
+        }
+        .status.orange {
+          background: #ffedd5;
+          color: #9a3412;
+        }
+        .status.green {
+          background: #dcfce7;
+          color: #166534;
+        }
+        .status.gray {
+          background: #e5e7eb;
+          color: #374151;
+        }
+
+        /* BUTTON */
         .btn-primary {
           background: #0d9488;
           color: white;
@@ -223,6 +261,11 @@ export default function OrdersPage() {
           padding: 6px 12px;
           border-radius: 6px;
           cursor: pointer;
+          font-size: 13px;
+          transition: background 0.2s;
+        }
+        .btn-primary:hover {
+          background: #0f766e;
         }
 
         .btn-primary.full {
@@ -231,11 +274,11 @@ export default function OrdersPage() {
         }
 
         .btn-primary:disabled {
-          opacity: 0.6;
+          background: #cbd5e1;
           cursor: not-allowed;
         }
 
-        /*MOBILE CARD*/
+        /* MOBILE CARD */
         .order-card {
           background: white;
           padding: 16px;
@@ -245,13 +288,14 @@ export default function OrdersPage() {
         }
 
         .row {
+
           display: flex;
           justify-content: space-between;
           margin-bottom: 6px;
           font-size: 14px;
         }
 
-        /*RESPONSIVE*/
+        /* RESPONSIVE */
         .mobile-only {
           display: none;
         }
