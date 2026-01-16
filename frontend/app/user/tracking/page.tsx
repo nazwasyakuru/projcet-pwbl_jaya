@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 
-// tipe data tracking
 interface Track {
   id: number;
   status: string;
@@ -18,15 +17,12 @@ interface Track {
   };
 }
 
-// tipe data order dengan status terakhir
 export default function TrackingPage() {
   const router = useRouter();
   const [tracks, setTracks] = useState<Track[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-
-    // fetch tracking data
     const fetchTracking = async () => {
       const token = localStorage.getItem("user_token");
       if (!token) {
@@ -58,13 +54,14 @@ export default function TrackingPage() {
       </div>
     );
   }
+
   return (
     <main className="min-h-screen bg-sky-50 px-4 py-6">
       <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-md p-6">
 
         {/*HEADER*/}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-lg font-semibold">Tracking Pesanan</h1>
+          <h1 className="text-lg font-semibold">Riwayat Tracking</h1>
 
           {/* Kembali ke Home User */}
           <Link
@@ -80,48 +77,58 @@ export default function TrackingPage() {
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-sky-100 text-sm text-left">
-                <th className="p-3">Nama</th>
+                <th className="p-3">Waktu</th>
+                <th className="p-3">Nama Pemesan</th>
                 <th className="p-3">Paket</th>
                 <th className="p-3">Berat</th>
-                <th className="p-3">Catatan</th>
                 <th className="p-3">Status</th>
               </tr>
             </thead>
 
             <tbody>
-              {userOrders.map((order) => (
-                <tr key={order.id} className="border-b text-sm">
-                  <td className="p-3">{order.nama}</td>
-                  <td className="p-3">{order.paket}</td>
-                  <td className="p-3">{order.berat} Kg</td>
-                  <td className="p-3">{order.catatan || "-"}</td>
+              {tracks.map((item) => (
+                <tr key={item.id} className="border-b text-sm">
+                  <td className="p-3">{new Date(item.timestamp).toLocaleString("id-ID")}</td>
+                  <td className="p-3">{item.order.name}</td>
+                  <td className="p-3">{item.order.serviceType}</td>
+                  <td className="p-3">{item.order.weight ? `${item.order.weight} Kg` : "-"}</td>
 
                   {/* STATUS (READ ONLY) */}
                   <td className="p-3">
                     <span className="px-3 py-1 rounded-full text-xs bg-teal-100 text-teal-700">
-                      {order.status}
+                      {item.status}
                     </span>
                   </td>
                 </tr>
               ))}
+              {tracks.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="p-4 text-center text-gray-500">
+                    Belum ada riwayat tracking.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
         {/*MOBILE (CARD)*/}
         <div className="md:hidden space-y-4">
-          {userOrders.map((order) => (
-            <div key={order.id} className="border rounded-lg p-4">
-              <p className="text-sm"><b>Nama:</b> {order.nama}</p>
-              <p className="text-sm"><b>Paket:</b> {order.paket}</p>
-              <p className="text-sm"><b>Berat:</b> {order.berat} Kg</p>
-              <p className="text-sm"><b>Catatan:</b> {order.catatan || "-"}</p>
+          {tracks.map((item) => (
+            <div key={item.id} className="border rounded-lg p-4">
+              <p className="text-sm text-gray-500 mb-2">{new Date(item.timestamp).toLocaleString("id-ID")}</p>
+              <p className="text-sm"><b>Nama:</b> {item.order.name}</p>
+              <p className="text-sm"><b>Paket:</b> {item.order.serviceType}</p>
+              <p className="text-sm"><b>Berat:</b> {item.order.weight ? `${item.order.weight} Kg` : "-"}</p>
 
               <span className="inline-block mt-2 px-3 py-1 rounded-full text-xs bg-teal-100 text-teal-700">
-                {order.status}
+                {item.status}
               </span>
             </div>
           ))}
+          {tracks.length === 0 && (
+            <div className="text-center text-gray-500">Belum ada riwayat tracking.</div>
+          )}
         </div>
 
       </div>
