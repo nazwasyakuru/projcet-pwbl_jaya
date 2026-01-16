@@ -14,9 +14,26 @@ function setCorsHeaders(res: NextResponse) {
 export function middleware(req: NextRequest) {
   console.log(`[MIDDLEWARE] ${req.method} ${req.nextUrl.pathname}`);
 
-  // 1. Handle Preflight Request (OPTIONS)
+  // 1. Tangani Permintaan Pra-Penerbangan (OPSI)
   if (req.method === "OPTIONS") {
     console.log(`[MIDDLEWARE] Handling OPTIONS for ${req.nextUrl.pathname}`);
     return setCorsHeaders(new NextResponse(null, { status: 200 }));
   }
-}
+    // 2. Verifikasi Admin untuk Rute Admin
+  if (req.nextUrl.pathname.startsWith("/api/admin")) {
+    // Only check auth if NOT a login/register request (though admin usually doesn't have register)
+    // admin/login is public
+    if (!req.nextUrl.pathname.includes("/login")) {
+      const user = verifyAdminEdge(req);
+
+      if (!user || user.role !== "admin") {
+        return setCorsHeaders(
+          NextResponse.json(
+            { message: "Unauthorized" },
+            { status: 401 }
+          )
+        );
+      }
+    }
+
+  // 3. Kembalikan respons tanpa modifikasi untuk permintaan lain
