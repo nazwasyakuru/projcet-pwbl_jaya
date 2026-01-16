@@ -4,8 +4,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
+import { apiFetch } from "@/lib/api";
 
-const API_URL = "http://localhost:3000/api";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -23,32 +23,23 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:3000/api/users/login", {
+      const data = await apiFetch("/api/users/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({ email, password }),
       });
 
-      const text = await res.text();
-      console.log("STATUS:", res.status);
-      console.log("BODY:", text);
+      console.log("LOGIN SUCCESS:", data);
 
-      if (!res.ok) {
-        setError("Email atau password salah");
-        return;
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        router.push("./");
+      } else {
+        throw new Error("Token tidak diterima dari server");
       }
 
-      const data = JSON.parse(text);
-
-      localStorage.setItem("token", data.token);
-
-      router.push("/dashboard/dashboarduser");
-
-    } catch (err) {
+    } catch (err: any) {
       console.error("LOGIN ERROR:", err);
-      setError("Gagal terhubung ke server");
+      setError(err.message || "Gagal terhubung ke server");
     } finally {
       setLoading(false);
     }
