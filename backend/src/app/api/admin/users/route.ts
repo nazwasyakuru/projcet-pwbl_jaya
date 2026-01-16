@@ -10,3 +10,18 @@ export async function OPTIONS() {
   return cors(new NextResponse(null, { status: 204 }));
 }
 
+// function get
+export async function GET(req: Request) {
+  //  ADMIN AUTH
+    const admin = verifyAdmin(req);
+    // unauthorized admin
+    if (!admin) {
+      return cors(
+        NextResponse.json(
+        { message: "Unauthorized admin" },
+        { status: 401 }
+      )
+     );
+    }
+   
+}
