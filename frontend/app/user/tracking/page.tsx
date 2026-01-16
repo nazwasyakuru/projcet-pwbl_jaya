@@ -24,7 +24,30 @@ export default function TrackingPage() {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [loading, setLoading] = useState(true);
 
- 
+  useEffect(() => {
+
+    // fetch tracking data
+    const fetchTracking = async () => {
+      const token = localStorage.getItem("user_token");
+      if (!token) {
+        // Redirect if not logged in
+        router.push("/loginuser");
+        return;
+      }
+
+      try {
+        const data = await apiFetch("/api/track", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        // Backend returns { tracks: [...] }
+        setTracks(data.tracks || []);
+      } catch (err) {
+        console.error("Failed to fetch tracking:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
   return (
     <main className="min-h-screen bg-sky-50 px-4 py-6">
       <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-md p-6">
