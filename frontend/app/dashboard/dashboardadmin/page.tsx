@@ -1,97 +1,137 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { orders } from "@/app/data/orders";
+import { useRouter } from "next/navigation";
+import { apiFetch } from "@/lib/api";
 
-/*TIPE STATUS PESANAN*/
-type StatusPesanan =
-  | "Penjemputan"
-  | "Dicuci"
-  | "Diproses"
-  | "Siap Diantar"
-  | "Selesai";
-
-/*TIPE DATA ORDER*/
-interface orders {
+type ActiveOrder = {
   id: number;
-  nama: string;
-  paket: string;
-  total: number;
-  status: StatusPesanan;
-}
+  name: string;
+  serviceType: string;
+  totalPrice: number;
+  status: string;
+  createdAt: string;
+};
+
+type DashboardSummary = {
+  pesananMasuk: number;
+  sedangDiproses: number;
+  siapDiantar: number;
+  pendapatanHariIni: number;
+};
+
+type DashboardData = {
+  summary: DashboardSummary;
+  activeOrders: ActiveOrder[];
+};
 
 export default function DashboardAdminPage() {
-  /* LOGIC DATA DASHBOARD*/
+  const router = useRouter();
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // Total seluruh pesanan
-  const pesananMasuk = orders.length;
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const token = localStorage.getItem("admin_token");
+        if (!token) {
+          router.push("/loginadmin");
+          return;
+        }
 
-  // Pesanan yang sedang diproses
-  const sedangDiproses = orders.filter(
-    (o) => o.status === "Dicuci" || o.status === "Diproses"
-  ).length;
+        // Fetch data dashboard
+        const dashboardData = await apiFetch("/api/admin/dashboard", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-  // Pesanan siap diantar
-  const siapDiantar = orders.filter(
-    (o) => o.status === "Siap Diantar"
-  ).length;
+        setData(dashboardData);
+      } catch (err: any) {
+        console.error("Dashboard Fetch Error:", err);
+        setError(err.message || "Gagal memuat data dashboard.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Total pendapatan
-  const pendapatanHariIni = orders.reduce(
-    (total, o) => total + o.total,
-    0
-  );
-
-  // Pesanan yang belum selesai
-  const pesananAktif = orders.filter(
-    (o) => o.status !== "Selesai"
-  );
+    fetchDashboardData();
+  }, [router]);
 
   // Format angka ke Rupiah
   const formatRupiah = (value: number) =>
     "Rp " + value.toLocaleString("id-ID");
 
-  /*UI DASHBOARD*/
+  // Helper untuk warna status (mirip dengan sebelumnya tapi menyesuaikan status backend)
+  const getStatusColor = (status: string) => {
+    // Mapping status backend ke warna visual
+    // Backend Status: CREATED, CONFIRMED, PROCESSING, WASHING, DRYING, READY, COMLETED, CANCELED
+    const s = status.toUpperCase();
+    if (s === "CREATED" || s === "CONFIRMED") return "yellow";
+    if (s === "PROCESSING" || s === "WASHING" || s === "DRYING") return "orange";
+    if (s === "READY" || s === "COMPLETED") return "green";
+    return "gray";
+  };
+
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-100">
+        <div className="text-xl font-semibold text-teal-600">Loading Dashboard...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center bg-gray-100 p-4">
+        <div className="text-red-500 mb-4 font-medium">{error}</div>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-teal-600 text-white rounded shadow hover:bg-teal-700"
+        >
+          Coba Lagi
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="container">
       {/*HEADER*/}
       <h1>Dashboard Admin</h1>
-      <p className="subtitle">
-        Ringkasan operasional laundry hari ini
-      </p>
+      <p className="subtitle">Ringkasan operasional laundry hari ini</p>
 
       {/*CARD RINGKASAN*/}
       <div className="cards">
         <div className="card">
           <p>Pesanan Masuk</p>
-          <h2>{pesananMasuk}</h2>
+          <h2>{data?.summary.pesananMasuk || 0}</h2>
         </div>
 
         <div className="card">
           <p>Sedang Diproses</p>
-          <h2>{sedangDiproses}</h2>
+          <h2>{data?.summary.sedangDiproses || 0}</h2>
         </div>
 
         <div className="card">
           <p>Siap Diantar</p>
-          <h2>{siapDiantar}</h2>
+          <h2>{data?.summary.siapDiantar || 0}</h2>
         </div>
 
         <div className="card">
           <p>Pendapatan</p>
-          <h2>{formatRupiah(pendapatanHariIni)}</h2>
+          <h2>{formatRupiah(data?.summary.pendapatanHariIni || 0)}</h2>
         </div>
       </div>
 
       {/*TABEL PESANAN*/}
       <div className="table-card">
         <div className="table-header">
-          <h3>Pesanan Aktif</h3>
+          <h3>Pesanan Aktif Terbaru</h3>
 
-          <Link
-            href="/dashboard/orders"
-            className="link"
-          >
+          <Link href="/dashboard/orders" className="link">
             Lihat Semua
           </Link>
         </div>
@@ -103,7 +143,7 @@ export default function DashboardAdminPage() {
               <tr>
                 <th>No</th>
                 <th>Nama</th>
-                <th>Paket</th>
+                <th>Layanan</th>
                 <th>Total</th>
                 <th>Status</th>
                 <th>Aksi</th>
@@ -111,41 +151,37 @@ export default function DashboardAdminPage() {
             </thead>
 
             <tbody>
-              {pesananAktif.map((order, index) => (
+              {data?.activeOrders.map((order, index) => (
                 <tr key={order.id}>
                   <td>{index + 1}</td>
-                  <td>{order.nama}</td>
-                  <td>{order.paket}</td>
-                  <td>{formatRupiah(order.total)}</td>
+                  <td>{order.name}</td>
+                  <td>{order.serviceType}</td>
+                  <td>{formatRupiah(order.totalPrice)}</td>
 
                   <td>
-                    <span
-                      className={`status ${order.status === "Dicuci"
-                          ? "yellow"
-                          : order.status === "Diproses"
-                            ? "orange"
-                            : "green"
-                        }`}
-                    >
+                    <span className={`status ${getStatusColor(order.status)}`}>
                       {order.status}
                     </span>
                   </td>
 
                   <td>
-                    <Link
-                      href="/dashboard/orders"
-                      className="btn-link"
-                    >
+                    <Link href="/dashboard/orders" className="btn-link">
                       Detail
                     </Link>
                   </td>
                 </tr>
               ))}
+              {data?.activeOrders.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="text-center py-4 text-gray-500">
+                    Tidak ada pesanan aktif saat ini.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </div>
-
       {/*STYLE*/}
       <style jsx>{`
         /*CONTAINER*/
