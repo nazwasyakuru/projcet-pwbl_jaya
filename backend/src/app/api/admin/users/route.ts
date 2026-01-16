@@ -23,5 +23,20 @@ export async function GET(req: Request) {
       )
      );
     }
-   
+    // fetch users
+    try {
+      const users = await prisma.user.findMany({
+        select: {
+          id: true,
+          username: true,
+            email: true,
+            createdAt: true,
+        },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    // success
+    return cors(NextResponse.json(users, { status: 200 }));
+    }
 }
