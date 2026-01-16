@@ -15,12 +15,14 @@ export async function POST(req: Request) {
   const body = (await req.json()) as {
     serviceType: Package["serviceType"];
     label: string;
+    price: Number;
   };
 
   const pkg = await prisma.package.create({
     data: {
       serviceType: body.serviceType,
       label: body.label,
+      price: body.price,
     },
   });
 

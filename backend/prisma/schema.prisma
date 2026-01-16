@@ -62,5 +62,6 @@ model Package {
   id          String      @id @default(cuid())
   label       String
   serviceType ServiceType
+  price       int         @default(0)
   createdAt   DateTime    @default(now())
 }
