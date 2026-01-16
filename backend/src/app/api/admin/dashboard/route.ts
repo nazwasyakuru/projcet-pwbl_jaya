@@ -13,10 +13,12 @@ export async function GET(req: Request) {
   //  ADMIN AUTH
   const admin = verifyAdmin(req);
   if (!admin) {
-    return NextResponse.json(
+    return cors(
+      NextResponse.json(
       { message: "Unauthorized admin" },
       { status: 401 }
-    );
+    )
+   );
   }
 
   try {
