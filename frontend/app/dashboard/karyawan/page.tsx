@@ -48,7 +48,27 @@ export default function Page() {
     fetchUsers();
   }, [router]);
   
-  
+  // handle form submit
+  if (loading) {
+    return (
+    <div className="flex bg-grey-100 h-screen flex-col items-center justify-center">
+      <div className="text-teal-600 font-semibold text-lg">Loading Users</div>
+    </div>
+    );
+  }
+
+  // handle form submit
+  if (error) {
+    return (
+      <div className="flex bg-grey-100 h-screen flex-col items-center justify-center">
+        <div className="text-red-600 font-semibold text-lg">{error}</div>
+        <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700">Coba Lagi
+            </button>
+      </div>
+    );
+  }
 
   /*UI*/
   return (
