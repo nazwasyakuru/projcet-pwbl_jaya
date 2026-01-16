@@ -1,8 +1,13 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { verifyAdmin } from "@/lib/auth";
+import { cors } from "@/lib/cors";
 
 const prisma = new PrismaClient();
+
+export async function OPTIONS() {
+  return cors(new NextResponse(null, { status: 204 }));
+}
 
 export async function GET(req: Request) {
   //  ADMIN AUTH
