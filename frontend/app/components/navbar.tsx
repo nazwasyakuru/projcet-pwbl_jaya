@@ -1,8 +1,27 @@
 "use client";
-import { useState } from "react";
-export default function Navbar() {
-    const [open, setOpen] = useState(false);
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
+// Navbar function
+export default function Navbar() {
+    // State untuk toggle dropdown admin
+    const [open, setOpen] = useState(false);
+    const [username, setUsername] = useState("Admin");
+    const router = useRouter();
+// Ambil username dari token saat komponen dimount
+    useEffect(() => {
+        // Ambil token dari localStorage
+        const token = localStorage.getItem("admin_token");
+        // Decode token untuk mendapatkan username
+        if (token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+
+               
     return (
         <header className="bg-white shadow-sm sticky top-0 z-50">
             {/* CONTAINER UTAMA NAVBAR */}
