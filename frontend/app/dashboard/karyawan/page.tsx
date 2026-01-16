@@ -10,6 +10,7 @@ interface UserData {
   name: string;
   username: string;
   email: string;
+  createdAt: string;
 }
 
 export default function Page() {
@@ -74,89 +75,59 @@ export default function Page() {
   return (
     <>
       <div className="container">
-        <h1>Manajemen Karyawan</h1>
+        <h1>Data User (Pelanggan)</h1>
 
-        {/*FORM INPUT*/}
-        <form onSubmit={handleSubmit} className="card form">
-          <input
-            placeholder="Nama Karyawan"
-            value={form.nama}
-            onChange={(e) => setForm({ ...form, nama: e.target.value })}
-            required
-          />
+        {/* INFO CARD */}
+        <div className="card mb-4">
+          <p className="text-sm text-gray-600">
+            Halaman ini menampilkan daftar user yang terdaftar di aplikasi.
+          </p>
+        </div>
 
-          <input
-            placeholder="Username"
-            value={form.username}
-            onChange={(e) => setForm({ ...form, username: e.target.value })}
-            required
-          />
-
-          <input
-            type="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-            required
-          />
-
-          <button className="btn-primary">
-            {editId ? "Update Data" : "Tambah"}
-          </button>
-        </form>
-
-        {/*ABLE DATA*/}
+        {/* TABLE DATA */}
         <div className="card">
-          {/* WRAPPER agar tabel bisa scroll di mobile */}
           <div className="table-wrapper">
             <table>
               <thead>
                 <tr>
+                  <th>ID</th>
                   <th>Nama</th>
-                  <th>Username</th>
                   <th>Email</th>
-                  <th>Aksi</th>
+                  <th>Tanggal Daftar</th>
                 </tr>
               </thead>
 
               <tbody>
                 {data.map((item) => (
                   <tr key={item.id}>
-                    <td>{item.nama}</td>
-                    <td>{item.username}</td>
+                    <td>#{item.id}</td>
+                    <td>{item.name}</td>
                     <td>{item.email}</td>
-                    <td className="aksi">
-                      <button
-                        className="btn-edit"
-                        onClick={() => handleEdit(item)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="btn-delete"
-                        onClick={() => handleDelete(item.id)}
-                      >
-                        Hapus
-                      </button>
-                    </td>
+                    <td>{new Date(item.createdAt).toLocaleDateString("id-ID")}</td>
                   </tr>
                 ))}
+                {data.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="text-center py-4 text-gray-500">
+                      Belum ada user terdaftar.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      {/*STYLE*/}
+      {/* STYLE */}
       <style jsx>{`
-        /*CONTAINER*/
+        /* CONTAINER */
         .container {
           padding: 16px;
           background: #f1f5f9;
           min-height: 100vh;
         }
 
-        /*JUDUL*/
         h1 {
           font-size: 22px;
           font-weight: 600;
@@ -164,43 +135,34 @@ export default function Page() {
           color: #0d9488;
         }
 
-        /*CARD*/
+        /* CARD */
         .card {
           background: white;
           border-radius: 8px;
           padding: 14px;
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-          margin-bottom: 20px;
+        }
+        
+        .mb-4 {
+          margin-bottom: 16px;
         }
 
-        /*FORM*/
-        .form {
-          /* auto-fit + minmax → otomatis responsif */
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 12px;
-        }
-
-        input {
-          padding: 10px;
-          border-radius: 6px;
-          border: 1px solid #cbd5e1;
+        .text-sm {
           font-size: 14px;
         }
-
-        input:focus {
-          outline: none;
-          border-color: #0d9488;
+        
+        .text-gray-600 {
+          color: #475569;
         }
 
-        /*TABLE RESPONSIVE*/
+        /* TABLE RESPONSIVE */
         .table-wrapper {
-          overflow-x: auto; /* scroll horizontal di HP */
+          overflow-x: auto;
         }
 
         table {
           width: 100%;
-          min-width: 600px; /* mencegah tabel hancur */
+          min-width: 600px;
           border-collapse: collapse;
         }
 
@@ -214,43 +176,12 @@ export default function Page() {
           padding: 10px;
           font-size: 13px;
           text-align: left;
-          white-space: nowrap; /* teks tidak turun */
+          white-space: nowrap;
+          border-bottom: 1px solid #e2e8f0;
         }
 
         tbody tr:hover {
           background: #f0fdfa;
-        }
-
-        /*BUTTON*/
-        .btn-primary {
-          background: #0d9488;
-          color: white;
-          border: none;
-          border-radius: 6px;
-          padding: 10px;
-          cursor: pointer;
-          font-weight: 500;
-        }
-
-        .aksi {
-          display: flex;
-          gap: 6px;
-        }
-
-        .btn-edit {
-          background: #f59e0b;
-          color: white;
-          border: none;
-          padding: 6px 10px;
-          border-radius: 4px;
-        }
-
-        .btn-delete {
-          background: #dc2626;
-          color: white;
-          border: none;
-          padding: 6px 10px;
-          border-radius: 4px;
         }
       `}</style>
     </>
