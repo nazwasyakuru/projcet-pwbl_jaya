@@ -4,7 +4,7 @@ import { verifyAdminEdge } from "@/lib/edge-auth";
 
 // Fungsi pembantu CORS eksplisit di dalam middleware untuk memastikan header selalu ada.
 function setCorsHeaders(res: NextResponse) {
-  res.headers.set("Access-Control-Allow-Origin", "*");
+  res.headers.set("Access-Control-Allow-Origin", "http://localhost:3001");
   res.headers.set("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
   res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
   return res;
