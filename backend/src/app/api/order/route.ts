@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-// ===== VERIFY TOKEN =====
+// VERIFY TOKEN
 function verifyToken(req: Request) {
   const auth = req.headers.get("authorization");
   if (!auth) return null;
@@ -16,7 +16,7 @@ function verifyToken(req: Request) {
   }
 }
 
-// ===== CREATE ORDER =====
+// CREATE ORDER 
 export async function POST(req: Request) {
   try {
     const user = verifyToken(req);

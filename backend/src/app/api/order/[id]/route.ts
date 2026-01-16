@@ -165,7 +165,7 @@ export async function DELETE(
       );
     }
 
-    // ✔ DELETE DIPERBOLEHKAN
+    // DELETE DIPERBOLEHKAN
     await prisma.order.delete({ where: { id } });
 
     return NextResponse.json(

@@ -8,7 +8,7 @@ export function verifyAdminEdge(req: NextRequest) {
 
   const token = authHeader.replace("Bearer ", "");
 
-  // ❗ TANPA jwt.verify
+  // TANPA jwt.verify
   // hanya cek token ADA atau tidak (atau pattern sederhana)
 
   return { role: "admin" }; // atau null

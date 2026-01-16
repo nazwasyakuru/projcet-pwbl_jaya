@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 export async function OPTIONS() {
   return cors(new NextResponse(null, { status: 204 }));
 }
-
+ // Admin login route
 export async function POST(req: Request) {
   try {
     const body = await req.json();
