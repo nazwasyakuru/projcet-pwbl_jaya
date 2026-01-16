@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { login } from "@/lib/auth";
+import Link from "next/link";
+import { apiFetch } from "@/lib/api";
 
-const API_URL = "http://localhost:3000/api/admin/login";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -16,36 +16,23 @@ export default function AdminLoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("ADMIN LOGIN SUBMIT");
     setError("");
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:3000/api/admin/login", {
+      const data = await apiFetch("/api/admin/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({ username, password }),
       });
-
-      const text = await res.text();
-      console.log("STATUS:", res.status);
-      console.log("BODY:", text);
-
-      if (!res.ok) {
-        setError("Username atau password salah");
-        return;
-      }
-
-      const data = JSON.parse(text);
 
       localStorage.setItem("admin_token", data.token);
 
       router.push("/dashboard/dashboardadmin");
 
-    } catch (err) {
+    } catch (err: any) {
       console.error("ADMIN LOGIN ERROR:", err);
-      setError("Gagal terhubung ke server");
+      setError(err.message || "Gagal terhubung ke server");
     } finally {
       setLoading(false);
     }
