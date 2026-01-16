@@ -61,14 +61,27 @@ export async function POST(req: Request) {
 
 // get tracking > ambil semua tracking terbaru berdasarkan orderId
 export async function GET(req: Request) {
-    try {
+   try {
+        const user = verifyToken(req) as { id: number; role: string } | null;
+
+        if (!user) {
+            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        }
+
+        // Jika user biasa, hanya ambil tracking milik user tersebut
+        const whereClause = user.role !== 'admin'
+            ? { order: { userId: user.id } }
+            : {};
+
         const tracks = await prisma.tracking.findMany({
-            orderBy: {timestamp: "desc"},
-             include: {
+            where: whereClause,
+            orderBy: { timestamp: "desc" },
+            include: {
                 order: true,
             },
         });
-        return NextResponse.json({tracks}, {status: 200});
+
+        return NextResponse.json({ tracks }, { status: 200 });
     } catch (err) {
         console.log(err);
         return NextResponse.json({ error: "Gagal mengambil data" }, { status: 500 });
