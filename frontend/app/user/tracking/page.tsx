@@ -1,10 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { userOrders } from "@/app/data/userOrders";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { apiFetch } from "@/lib/api";
 
+// tipe data tracking
+interface Track {
+  id: number;
+  status: string;
+  timestamp: string;
+  order: {
+    id: number;
+    name: string;
+    serviceType: string;
+    weight: number;
+  };
+}
 
+// tipe data order dengan status terakhir
 export default function TrackingPage() {
+  const router = useRouter();
+  const [tracks, setTracks] = useState<Track[]>([]);
+  const [loading, setLoading] = useState(true);
+
+ 
   return (
     <main className="min-h-screen bg-sky-50 px-4 py-6">
       <div className="max-w-6xl mx-auto bg-white rounded-xl shadow-md p-6">
