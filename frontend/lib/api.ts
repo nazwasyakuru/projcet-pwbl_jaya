@@ -47,3 +47,14 @@ export async function apiFetch(
 
   return data;
 }
+
+// =======================
+// USER AUTH
+// =======================
+
+export async function registerUser(data: { name: string; email: string; password: string }) {
+  return apiFetch("/api/users/register", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
