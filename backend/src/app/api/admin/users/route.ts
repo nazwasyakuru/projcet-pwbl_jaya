@@ -38,5 +38,13 @@ export async function GET(req: Request) {
     });
     // success
     return cors(NextResponse.json(users, { status: 200 }));
-    }
+    } catch (error) {
+        console.error("Get Users Error:", error);
+        return cors(
+          NextResponse.json(
+            { message: "Failed to fetch users" },
+            { status: 500 }
+          )
+        );
+    }   
 }
